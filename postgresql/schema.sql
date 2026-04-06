@@ -629,8 +629,8 @@ CREATE TABLE admission (
     admission_id INTEGER GENERATED ALWAYS AS IDENTITY
         PRIMARY KEY, 
     MRN CHAR(10) NOT NULL, 
-    provider_id INTEGER NOT NULL, 
-    room_id INTEGER NOT NULL, 
+    provider_id INTEGER, 
+    room_id INTEGER, 
     admission_datetime TIMESTAMPTZ NOT NULL, 
     admission_diagnosis TEXT, 
     admission_type hospital_admission_type NOT NULL, 
@@ -651,7 +651,7 @@ CREATE TABLE admission (
     CONSTRAINT fk_admission_room_id 
         FOREIGN KEY (room_id)
         REFERENCES hospital_room(room_id)
-        ON DELETE CASCADE,
+        ON DELETE SET NULL,
     CONSTRAINT chk_time_admitted 
         CHECK (admission_datetime < discharge_datetime)
 );
@@ -678,7 +678,7 @@ CREATE TABLE prescription (
     prescription_id INTEGER GENERATED ALWAYS AS IDENTITY
         PRIMARY KEY, 
     MRN CHAR(10) NOT NULL, 
-    provider_id INTEGER NOT NULL, 
+    provider_id INTEGER, 
     medication_id INTEGER NOT NULL, 
     date_prescribed TIMESTAMPTZ NOT NULL, 
     expiration_date TIMESTAMPTZ, 
@@ -724,8 +724,8 @@ CREATE TABLE lab_order (
     order_id INTEGER GENERATED ALWAYS AS IDENTITY
         PRIMARY KEY, 
     MRN CHAR(10) NOT NULL,
-    provider_id INTEGER NOT NULL, 
-    facility_id INTEGER NOT NULL,
+    provider_id INTEGER, 
+    facility_id INTEGER,
     date_ordered TIMESTAMPTZ NOT NULL, 
     lab_priority lab_priority NOT NULL, 
     is_completed BOOLEAN NOT NULL,
