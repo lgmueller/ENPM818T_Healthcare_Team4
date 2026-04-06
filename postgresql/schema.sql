@@ -838,6 +838,10 @@ CREATE TABLE insurance_diagnosis_codes (
     diagnosis VARCHAR(100), 
     notes TEXT,
 
+    CONSTRAINT fk_insurance_diagnosis_code_insurance_claim
+        FOREIGN KEY (insurance_claim)
+        REFERENCES insurance_claim(claim_id)
+        ON DELETE CASCADE,
     CONSTRAINT pk_insurance_diagnosis 
         PRIMARY KEY (insurance_claim, diagnosis)
 );
@@ -847,6 +851,10 @@ CREATE TABLE insurance_procedures_codes (
     procedure_code VARCHAR(100), 
     notes TEXT,
 
+    CONSTRAINT fk_insurance_procedure_code_insurance_claim
+        FOREIGN KEY (insurance_claim)
+        REFERENCES insurance_claim(claim_id)
+        ON DELETE CASCADE,
     CONSTRAINT pk_insurance_procedure_code 
         PRIMARY KEY (insurance_claim, procedure_code)
 );
