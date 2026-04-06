@@ -628,7 +628,7 @@ CREATE TYPE hospital_admission_type AS ENUM (
 CREATE TABLE admission (
     admission_id INTEGER GENERATED ALWAYS AS IDENTITY
         PRIMARY KEY, 
-    MRN INTEGER NOT NULL, 
+    MRN CHAR(10) NOT NULL, 
     provider_id INTEGER NOT NULL, 
     room_id INTEGER NOT NULL, 
     admission_datetime TIMESTAMPTZ NOT NULL, 
@@ -664,7 +664,7 @@ CREATE TABLE medication (
     schedule VARCHAR(2),
 
     CONSTRAINT chk_med_schedule
-        CHECK (schedule IN ('I', 'II', 'III', 'IV', 'V')),
+        CHECK (schedule is NULL OR IN ('I', 'II', 'III', 'IV', 'V')),
 );
 
 CREATE TYPE prescription_status as ENUM (
@@ -677,7 +677,7 @@ CREATE TYPE prescription_status as ENUM (
 CREATE TABLE prescription (
     prescription_id INTEGER GENERATED ALWAYS AS IDENTITY
         PRIMARY KEY, 
-    MRN INTEGER NOT NULL, 
+    MRN CHAR(10) NOT NULL, 
     provider_id INTEGER NOT NULL, 
     medication_id INTEGER NOT NULL, 
     date_prescribed TIMESTAMPTZ NOT NULL, 
@@ -723,7 +723,7 @@ CREATE TYPE lab_priority as ENUM (
 CREATE TABLE lab_order (
     order_id INTEGER GENERATED ALWAYS AS IDENTITY
         PRIMARY KEY, 
-    MRN INTEGER NOT NULL,
+    MRN CHAR(10) NOT NULL,
     provider_id INTEGER NOT NULL, 
     facility_id INTEGER NOT NULL,
     date_ordered TIMESTAMPTZ NOT NULL, 
@@ -767,7 +767,7 @@ CREATE TABLE lab_test (
 CREATE TABLE insurance (
     insurance_id INTEGER GENERATED ALWAYS AS IDENTITY
         PRIMARY KEY, 
-    MRN INTEGER NOT NULL,
+    MRN CHAR(10) NOT NULL,
     policy_no VARCHAR(20) NOT NULL, 
     group_no VARCHAR(10) NOT NULL, 
     copay_amount NUMERIC(10,2) NOT NULL, 
@@ -793,7 +793,7 @@ CREATE TYPE insurance_claim_status AS ENUM (
 CREATE TABLE insurance_claim (
     claim_id INTEGER GENERATED ALWAYS AS IDENTITY
         PRIMARY KEY, 
-    MRN INTEGER NOT NULL,
+    MRN CHAR(10) NOT NULL,
     service_date TIMESTAMPTZ NOT NULL, 
     charge_amount NUMERIC(10,2) NOT NULL, 
     insurance_claim_status insurance_claim_status NOT NULL, 
@@ -805,14 +805,14 @@ CREATE TABLE insurance_claim (
         REFERENCES patient(MRN)
         ON DELETE CASCADE,
     CONSTRAINT chk_claim_amounts 
-        CHECK (charge_amount >= 0.0 AND patient_responsibility >= 0.0),
+        CHECK (charge_amount >= 0.0 AND patient_responsibility >= 0.0)
 );
 
 CREATE TABLE payment (
     payment_id INTEGER GENERATED ALWAYS AS IDENTITY
         PRIMARY KEY, 
     claim_id INTEGER NOT NULL, 
-    MRN INTEGER NOT NULL, 
+    MRN CHAR(10) NOT NULL, 
     amount NUMERIC(10,2) NOT NULL, 
     payment_date TIMESTAMPTZ NOT NULL, 
     payment_source VARCHAR(100),
@@ -826,7 +826,7 @@ CREATE TABLE payment (
         REFERENCES insurance_claim(claim_id)
         ON DELETE CASCADE,
     CONSTRAINT chk_payment_amount
-        CHECK (amount >= 0.0),
+        CHECK (amount >= 0.0)
 );
 
 CREATE TABLE insurance_diagnosis_codes (
@@ -835,7 +835,7 @@ CREATE TABLE insurance_diagnosis_codes (
     notes TEXT,
 
     CONSTRAINT pk_insurance_diagnosis 
-        PRIMARY KEY (insurance_claim, diagnosis),
+        PRIMARY KEY (insurance_claim, diagnosis)
 );
 
 CREATE TABLE insurance_procedures_codes (
@@ -844,5 +844,5 @@ CREATE TABLE insurance_procedures_codes (
     notes TEXT,
 
     CONSTRAINT pk_insurance_procedure_code 
-        PRIMARY KEY (insurance_claim, procedure_code),
+        PRIMARY KEY (insurance_claim, procedure_code)
 );
