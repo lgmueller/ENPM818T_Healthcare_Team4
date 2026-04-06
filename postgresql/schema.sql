@@ -638,7 +638,7 @@ CREATE TABLE admission (
     discharge_datetime TIMESTAMPTZ, 
     discharge_disposition TEXT, 
     discharge_diagnosis TEXT, 
-    discharage_instructions TEXT, 
+    discharge_instructions TEXT, 
 
     CONSTRAINT fk_admission_MRN
         FOREIGN KEY (MRN)
@@ -664,7 +664,7 @@ CREATE TABLE medication (
     schedule VARCHAR(2),
 
     CONSTRAINT chk_med_schedule
-        CHECK (schedule is NULL OR IN ('I', 'II', 'III', 'IV', 'V')),
+        CHECK (schedule is NULL OR schedule IN ('I', 'II', 'III', 'IV', 'V'))
 );
 
 CREATE TYPE prescription_status as ENUM (
