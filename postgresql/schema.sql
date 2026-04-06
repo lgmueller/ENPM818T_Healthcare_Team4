@@ -653,7 +653,7 @@ CREATE TABLE admission (
         REFERENCES hospital_room(room_id)
         ON DELETE SET NULL,
     CONSTRAINT chk_time_admitted 
-        CHECK (admission_datetime < discharge_datetime)
+        CHECK (discharge_datetime IS NULL OR admission_datetime < discharge_datetime)
 );
 
 CREATE TABLE medication (
@@ -738,7 +738,7 @@ CREATE TABLE lab_order (
         FOREIGN KEY (provider_id)
         REFERENCES provider(provider_id)
         ON DELETE SET NULL,
-    CONSTRAINT facility_id 
+    CONSTRAINT fk_lab_order_facility_id 
         FOREIGN KEY (facility_id)
         REFERENCES facility(facility_id)
         ON DELETE SET NULL
