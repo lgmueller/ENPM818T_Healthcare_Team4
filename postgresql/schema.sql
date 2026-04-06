@@ -585,7 +585,41 @@ EXECUTE FUNCTION set_updated_at();
 
 
 
-CREATE TABLE hospital_room ();
+CREATE TABLE hospital_room (
+    room_id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+
+    facility_id INTEGER NOT NULL,
+    room_number VARCHAR(10) NOT NULL,
+    building VARCHAR(50),
+    floor INTEGER,
+    is_available BOOLEAN NOT NULL DEFAULT TRUE,
+    room_type VARCHAR(50) NOT NULL,
+    capacity INTEGER NOT NULL,
+
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_room_facility
+        FOREIGN KEY (facility_id)
+        REFERENCES facility(facility_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+
+    CONSTRAINT uq_room_per_facility
+        UNIQUE (facility_id, room_number),
+
+    CONSTRAINT chk_room_capacity
+        CHECK (capacity > 0)
+);
+
+
+CREATE TRIGGER trg_hospital_room_updated_at
+BEFORE UPDATE ON hospital_room
+FOR EACH ROW
+EXECUTE FUNCTION set_updated_at();
+
+
+
 
 CREATE TYPE hospital_admission_type AS ENUM (
     'emergency', 'urgent', 'elective', 'observation'
