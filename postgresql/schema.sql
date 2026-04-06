@@ -653,7 +653,7 @@ CREATE TABLE admission (
         REFERENCES hospital_room(room_id)
         ON DELETE CASCADE,
     CONSTRAINT chk_time_admitted 
-        CHECK (admission_datetime < discharge_datetime),
+        CHECK (admission_datetime < discharge_datetime)
 );
 
 CREATE TABLE medication (
@@ -664,7 +664,11 @@ CREATE TABLE medication (
     schedule VARCHAR(2),
 
     CONSTRAINT chk_med_schedule
+<<<<<<< Updated upstream
         CHECK (schedule is NULL OR IN ('I', 'II', 'III', 'IV', 'V')),
+=======
+        CHECK (schedule IN ('I', 'II', 'III', 'IV', 'V'))
+>>>>>>> Stashed changes
 );
 
 CREATE TYPE prescription_status as ENUM (
@@ -700,20 +704,20 @@ CREATE TABLE prescription (
     CONSTRAINT fk_prescription_medication_id 
         FOREIGN KEY (medication_id)
         REFERENCES medication(medication_id)
-        ON DELETE CASCADE,
+        ON DELETE CASCADE
 );
 
 CREATE TABLE refill_history (
     prescription_id INTEGER NOT NULL, 
     date_refilled TIMESTAMPTZ NOT NULL, 
-    pharmacy VARCHAR(30),
+    pharmacy VARCHAR(30)
 
     CONSTRAINT pk_refill_history
         PRIMARY KEY (prescription_id, date_refilled),
     CONSTRAINT fk_refill_history_prescription_id 
         FOREIGN KEY (prescription_id)
         REFERENCES prescription(prescription_id)
-        ON DELETE CASCADE,
+        ON DELETE CASCADE
 );
 
 CREATE TYPE lab_priority as ENUM (
@@ -741,7 +745,7 @@ CREATE TABLE lab_order (
     CONSTRAINT facility_id 
         FOREIGN KEY (facility_id)
         REFERENCES facility(facility_id)
-        ON DELETE SET NULL,
+        ON DELETE SET NULL
     
 );
 
@@ -761,7 +765,7 @@ CREATE TABLE lab_test (
     CONSTRAINT fk_lab_test_order_id
         FOREIGN KEY (order_id)
         REFERENCES lab_order(order_id)
-        ON DELETE CASCADE,
+        ON DELETE CASCADE
 );
 
 CREATE TABLE insurance (
@@ -783,7 +787,7 @@ CREATE TABLE insurance (
     CONSTRAINT chk_insurance_dates 
         CHECK (effective_date < termination_date),
     CONSTRAINT chk_insurance_copay 
-        CHECK (copay_amount >= 0.0),
+        CHECK (copay_amount >= 0.0)
 );
 
 CREATE TYPE insurance_claim_status AS ENUM (
