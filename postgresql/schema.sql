@@ -634,7 +634,7 @@ CREATE TABLE admission (
     admission_datetime TIMESTAMPTZ NOT NULL, 
     admission_diagnosis TEXT, 
     admission_type hospital_admission_type NOT NULL, 
-    expected_length_of_stay VARCHAR(50)
+    expected_length_of_stay VARCHAR(50),
     discharge_datetime TIMESTAMPTZ, 
     discharge_disposition TEXT, 
     discharge_diagnosis TEXT, 
@@ -664,11 +664,7 @@ CREATE TABLE medication (
     schedule VARCHAR(2),
 
     CONSTRAINT chk_med_schedule
-<<<<<<< Updated upstream
         CHECK (schedule is NULL OR IN ('I', 'II', 'III', 'IV', 'V')),
-=======
-        CHECK (schedule IN ('I', 'II', 'III', 'IV', 'V'))
->>>>>>> Stashed changes
 );
 
 CREATE TYPE prescription_status as ENUM (
@@ -710,7 +706,7 @@ CREATE TABLE prescription (
 CREATE TABLE refill_history (
     prescription_id INTEGER NOT NULL, 
     date_refilled TIMESTAMPTZ NOT NULL, 
-    pharmacy VARCHAR(30)
+    pharmacy VARCHAR(30),
 
     CONSTRAINT pk_refill_history
         PRIMARY KEY (prescription_id, date_refilled),
