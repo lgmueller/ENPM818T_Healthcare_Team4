@@ -22,14 +22,18 @@ CREATE TYPE appointment_type_enum AS ENUM (
     'follow_up',
     'consultation',
     'urgent_care',
-    'telehealth'
+    'telehealth', 
+    'routine_checkup', 
+    'procedure'
 );
 
 CREATE TYPE appointment_status_enum AS ENUM (
     'scheduled',
     'completed',
     'cancelled',
-    'no_show'
+    'no_show', 
+    'confirmed', 
+    'under_review'
 );
 
 
@@ -787,7 +791,7 @@ CREATE TABLE insurance (
 );
 
 CREATE TYPE insurance_claim_status AS ENUM (
-    'draft', 'submitted', 'pending', 'approved', 'denied', 'appealed'
+    'draft', 'submitted', 'pending', 'approved', 'denied', 'appealed', 'partially_approved', 'under_review'
 );
 
 CREATE TABLE insurance_claim (
