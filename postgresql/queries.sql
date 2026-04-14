@@ -287,6 +287,7 @@ ORDER BY covered_patient_count DESC, insurance_company;
 
 
 
+
 -- Query #5: Prescription Costs
 -- Clinical/Financial/Operational Context: List all active prescriptions with patient name, medication, and insurance policy, ordered by patient.
 -- Tables Used: prescription, patient, medication, insurance
@@ -327,7 +328,18 @@ ORDER BY
     m.medication_name;
 
 -- Expected Output: table of active prescriptions with patient name, medication, and insurance details, ordered by patient.
+-- Columns: MRN | patient_first_name | patient_last_name | medication_name | prescription_id | date_prescribed | expiration_date | dosage | frequency | insurance_company | policy_no | group_no
+
 -- Sample Results:
+-- 1000000097 | Kai     | Anderson | Rosuvastatin            | 68  | 2026-04-06 17:00:00+00 | 2026-07-05 17:00:00+00 | 10 mg                  | once nightly                     | BlueCross BlueShield of Maryland | POL009811188 | G70587
+-- 1000000007 | Victor  | Baker    | Tramadol                | 145 | 2026-03-29 10:45:00+00 | 2026-04-28 10:45:00+00 | 50 mg                  | every 8 hours as needed pain     | Maryland Medicaid                | POL000818967 | G57208
+-- 1000000014 | Ariana  | Brown    | Fluticasone nasal spray | 71  | 2026-03-18 10:30:00+00 | 2026-04-17 10:30:00+00 | 2 sprays each nostril  | once daily                       | BlueCross BlueShield of Maryland | POL001515156 | G45256
+
+
+
+
+
+
 
 -- Query #6: Provider Productivity
 -- Clinical/Financial/Operational Context: Show appointment counts, no-show rates, and average patients per day by provider.
@@ -350,17 +362,28 @@ SELECT
     ) AS no_show_rate_percent,
 
     COUNT(DISTINCT DATE(pa.slot_date)) AS active_days,
-    ROUND(COUNT(a.appointment_id) * 1.0 / NULLIF(COUNT(DISTINCT DATE(pa.slot_date)), 0), 2) AS avg_patients_per_day
+    ROUND(COUNT(a.appointment_id) * 1.0 / NULLIF(COUNT(DISTINCT pa.slot_date), 0), 2) AS avg_patients_per_day
 FROM appointment a
 JOIN provider_availability pa
     ON a.slot_id = pa.slot_id
 JOIN provider p
-    ON pa.provider_id = p.provider_id   
+    ON pa.provider_id = p.provider_id
 GROUP BY p.provider_id, p.first_name, p.last_name
-ORDER BY p.last_name, p.first_name DESC;
+ORDER BY p.last_name, p.first_name;
 
 -- Expected Output: table of providers with appointment counts, no-show rates, and average patients per day, ordered by provider name.
+-- Columns: provider_id | first_name | last_name | total_appointments | no_show_count | no_show_rate_percent | active_days | avg_patients_per_day
+
 -- Sample Results:
+-- 17 | Zoe    | Baker   | 20 | 1 | 5.00  | 19 | 1.05
+-- 32 | Jack   | Barnes  | 1  | 0 | 0.00  | 1  | 1.00
+-- 1  | Olivia | Bennett | 18 | 0 | 0.00  | 16 | 1.13
+
+
+
+
+
+
 
 -- Query #7: Controlled Substances
 -- Clinical/Financial/Operational Context: Report all Schedule II controlled substance prescriptions by provider, required for DEA reporting.
@@ -404,7 +427,16 @@ WHERE m.schedule = 'II'
 ORDER BY p.provider_id, pr.date_prescribed DESC;
 
 -- Expected Output: table of Schedule II prescriptions with provider, patient, medication, and DEA details, ordered by provider and prescription date.
--- Sample Results: 
+-- Columns: provider_id | first_name | last_name | prescription_id | date_prescribed | expiration_date | MRN | patient_first_name | patient_last_name | medication_name | schedule | dea_no | dosage | frequency | duration | prescription_status
+
+-- Sample Results:
+-- 15 | Amelia | Brooks | 69 | 2026-03-05 13:00:00+00 | 2026-04-04 13:00:00+00 | 1000000056 | Henry | Hall | Oxycodone | II | SZ8653855 | 5 mg | every 6 hours as needed severe pain | 5 days | discontinued
+
+
+
+
+
+
 
 -- Query #8: Appointment Status Breakdown
 -- Clinical/Financial/Operational Context: Show counts of appointments by status (completed, no-show, cancelled) broken down by facility.
@@ -437,7 +469,12 @@ GROUP BY f.facility_id, f.facility_name
 ORDER BY total_appointments DESC;
 
 -- Expected Output: table of facilities with appointment counts by status, ordered by total appointments.
+-- Columns: facility_id | facility_name | total_appointments | completed_count | no_show_count | cancelled_count | no_show_rate_percent
+
 -- Sample Results:
+-- 3 | Chesapeake Children's Hospital | 40 | 23 | 6 | 2 | 15.00
+-- 4 | District University Hospital   | 35 | 20 | 5 | 3 | 14.29
+-- 6 | Capitol Primary Care Clinic    | 29 | 13 | 3 | 4 | 10.34
 
 
 
@@ -473,8 +510,10 @@ WHERE pa.slot_date >= CURRENT_DATE
 ORDER BY pa.slot_date, pa.start_time, p.last_name, p.first_name;
 
 -- Expected Output: One row per upcoming scheduled/confirmed appointment where the patient has no active insurance on file. Columns include appointment ID, patient name, date/time, and facility.
+-- Columns: appointment_id | MRN | patient_first_name | patient_last_name | slot_date | start_time | end_time | facility_id | facility_name
 -- Sample Results:
--- [paste first 3 real rows from DataGrip]
+-- 180 | 1000000044 | Anika | White | 2026-05-03 | 15:00:00 | 15:45:00 | 9 | Laurel Pediatrics Center
+
 
 
 
@@ -513,8 +552,12 @@ GROUP BY
 ORDER BY open_slots DESC, f.facility_name, p.last_name, p.first_name;
 
 -- Expected Output: One row per provider per facility, showing future slot capacity in the next 30 days, how many are booked, and how many remain open.
+-- Columns: facility_id | facility_name | provider_id | provider_first_name | provider_last_name | provider_type | total_future_slots | booked_slots | open_slots
+
 -- Sample Results:
--- [paste first 3 real rows from DataGrip]
+-- 8 | Bethesda Internal Medicine       | 1  | Olivia | Bennett | Physician           | 3 | 3 | 0
+-- 8 | Bethesda Internal Medicine       | 27 | Harper | Cole    | Physician           | 4 | 4 | 0
+-- 8 | Bethesda Internal Medicine       | 5  | Sophia | Patel   | Nurse Practitioner  | 1 | 1 | 0
 
 
 
@@ -555,5 +598,11 @@ LEFT JOIN facility f
 WHERE lt.abnormal_flag = TRUE
 ORDER BY lo.date_ordered DESC, p.last_name, p.first_name, lt.test_type;
 
+
 -- Expected Output: One row per abnormal lab test result, including patient identity, test details, abnormal values, ordering provider, and facility.
+-- Columns: test_id | order_id | MRN | patient_first_name | patient_last_name | test_type | test_value_result | ref_range_low | ref_range_high | abnormal_flag | interpretation_notes | date_ordered | provider_id | provider_first_name | provider_last_name | facility_id | facility_name
+
 -- Sample Results:
+-- 200 | 88 | 1000000102 | Tessa  | Scott  | CBC          | 11.52 | 12.0 | 17.5 | true | NULL                              | 2026-04-03 17:15:00+00 | 11 | Hannah    | Osei    | 6 | Capitol Primary Care Clinic
+-- 176 | 75 | 1000000066 | Lucas  | White  | Lipid panel  | -0.3  | 0    | 149  | true | Critical value called to provider | 2026-03-25 17:45:00+00 | 5  | Sophia    | Patel   | 6 | Capitol Primary Care Clinic
+-- 173 | 74 | 1000000087 | Tara   | Parker | CBC          | 123.9 | 150  | 450  | true | NULL                              | 2026-03-20 18:00:00+00 | 23 | Ella      | Howard  | 5 | Memorial General Hospital
