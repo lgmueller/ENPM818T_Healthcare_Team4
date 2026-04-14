@@ -438,3 +438,122 @@ ORDER BY total_appointments DESC;
 
 -- Expected Output: table of facilities with appointment counts by status, ordered by total appointments.
 -- Sample Results:
+
+
+
+
+-- Query #9: Upcoming Appointments Without Active Insurance
+-- Clinical/Financial/Operational Context: Front-desk and care coordination teams need to identify patients with upcoming appointments who do not currently have active insurance coverage on file, so coverage can be verified before the visit.
+-- Tables Used: appointment, patient, provider_availability, facility, insurance
+-- Complexity Features: INNER JOINs, LEFT JOIN, date filtering, NULL filtering, ordering
+
+SELECT
+    a.appointment_id,
+    p.MRN,
+    p.first_name AS patient_first_name,
+    p.last_name AS patient_last_name,
+    pa.slot_date,
+    pa.start_time,
+    pa.end_time,
+    f.facility_id,
+    f.facility_name
+FROM appointment a
+JOIN patient p
+    ON a.MRN = p.MRN
+JOIN provider_availability pa
+    ON a.slot_id = pa.slot_id
+JOIN facility f
+    ON pa.facility_id = f.facility_id
+LEFT JOIN insurance i
+    ON p.MRN = i.MRN
+   AND CURRENT_TIMESTAMP BETWEEN i.effective_date AND i.termination_date
+WHERE pa.slot_date >= CURRENT_DATE
+  AND a.appt_status IN ('scheduled', 'confirmed')
+  AND i.insurance_id IS NULL
+ORDER BY pa.slot_date, pa.start_time, p.last_name, p.first_name;
+
+-- Expected Output: One row per upcoming scheduled/confirmed appointment where the patient has no active insurance on file. Columns include appointment ID, patient name, date/time, and facility.
+-- Sample Results:
+-- [paste first 3 real rows from DataGrip]
+
+
+
+
+
+-- Query #10: Open Provider Capacity by Facility
+-- Clinical/Financial/Operational Context: Scheduling and operations teams need visibility into unbooked provider slots in the next 30 days in order to improve access, reduce wait times, and balance provider capacity across facilities.
+-- Tables Used: provider_availability, appointment, provider, facility
+-- Complexity Features: INNER JOINs, LEFT JOIN, aggregates, GROUP BY, date filtering, ordering
+
+SELECT
+    f.facility_id,
+    f.facility_name,
+    p.provider_id,
+    p.first_name AS provider_first_name,
+    p.last_name AS provider_last_name,
+    p.provider_type,
+    COUNT(pa.slot_id) AS total_future_slots,
+    COUNT(a.appointment_id) AS booked_slots,
+    COUNT(pa.slot_id) - COUNT(a.appointment_id) AS open_slots
+FROM provider_availability pa
+JOIN provider p
+    ON pa.provider_id = p.provider_id
+JOIN facility f
+    ON pa.facility_id = f.facility_id
+LEFT JOIN appointment a
+    ON pa.slot_id = a.slot_id
+WHERE pa.slot_date BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '30 days'
+GROUP BY
+    f.facility_id,
+    f.facility_name,
+    p.provider_id,
+    p.first_name,
+    p.last_name,
+    p.provider_type
+ORDER BY open_slots DESC, f.facility_name, p.last_name, p.first_name;
+
+-- Expected Output: One row per provider per facility, showing future slot capacity in the next 30 days, how many are booked, and how many remain open.
+-- Sample Results:
+-- [paste first 3 real rows from DataGrip]
+
+
+
+
+
+-- Query #11: Abnormal Lab Results Follow-Up
+-- Clinical/Financial/Operational Context: Abnormal lab results require timely provider review and possible patient follow-up. This query highlights patients with abnormal test results, the ordering provider, and the facility involved.
+-- Tables Used: lab_test, lab_order, patient, provider, facility
+-- Complexity Features: INNER JOINs, WHERE filtering, ordering output
+
+SELECT
+    lt.test_id,
+    lo.order_id,
+    p.MRN,
+    p.first_name AS patient_first_name,
+    p.last_name AS patient_last_name,
+    lt.test_type,
+    lt.test_value_result,
+    lt.ref_range_low,
+    lt.ref_range_high,
+    lt.abnormal_flag,
+    lt.interpretation_notes,
+    lo.date_ordered,
+    prv.provider_id,
+    prv.first_name AS provider_first_name,
+    prv.last_name AS provider_last_name,
+    f.facility_id,
+    f.facility_name
+FROM lab_test lt
+JOIN lab_order lo
+    ON lt.order_id = lo.order_id
+JOIN patient p
+    ON lo.MRN = p.MRN
+LEFT JOIN provider prv
+    ON lo.provider_id = prv.provider_id
+LEFT JOIN facility f
+    ON lo.facility_id = f.facility_id
+WHERE lt.abnormal_flag = TRUE
+ORDER BY lo.date_ordered DESC, p.last_name, p.first_name, lt.test_type;
+
+-- Expected Output: One row per abnormal lab test result, including patient identity, test details, abnormal values, ordering provider, and facility.
+-- Sample Results:
