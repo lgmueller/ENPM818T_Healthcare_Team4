@@ -1,3 +1,292 @@
+-- Query #1: Example 1: Patient Care Coordination (Patient Based)
+-- Clinical/Financial/Operational Context: For a patient arriving for an appointment, clinicians and front-desk staff need one view of demographics, current insurance coverage, and active prescriptions to support safe and efficient care.
+-- Tables Used: patient, phone_numbers, insurance, prescription, medication
+-- Complexity Features: LEFT JOINs, date filtering, active-status filtering, ordering output
+
+SELECT
+    p.MRN,
+    p.first_name,
+    p.last_name,
+    p.dob,
+    p.gender,
+    pn.number AS phone_number,
+    p.city,
+    p.state,
+    p.communication_pref,
+    p.pharmacy_pref,
+
+    i.insurance_company,
+    i.policy_no,
+    i.group_no,
+    i.copay_amount,
+    i.coverage,
+    i.effective_date,
+    i.termination_date,
+
+    pr.prescription_id,
+    m.medication_name,
+    m.schedule,
+    pr.dosage,
+    pr.frequency,
+    pr.duration,
+    pr.prescription_status,
+    pr.date_prescribed,
+    pr.expiration_date
+
+FROM patient p
+LEFT JOIN phone_numbers pn
+    ON p.MRN = pn.MRN
+LEFT JOIN insurance i
+    ON p.MRN = i.MRN
+   AND CURRENT_TIMESTAMP BETWEEN i.effective_date AND i.termination_date
+LEFT JOIN prescription pr
+    ON p.MRN = pr.MRN
+   AND pr.prescription_status = 'active'
+   AND (pr.expiration_date IS NULL OR pr.expiration_date > CURRENT_TIMESTAMP)
+LEFT JOIN medication m
+    ON pr.medication_id = m.medication_id
+
+WHERE p.MRN = '1000000000'
+ORDER BY m.medication_name;
+
+
+-- Expected Output:
+-- One row per active prescription for a selected patient.
+-- Includes patient demographics, contact details, active insurance coverage,
+-- and prescription details including dosage and validity dates.
+
+-- Columns:
+-- MRN | first_name | last_name | dob | gender | phone_number | city | state | communication_pref | pharmacy_pref | insurance_company | policy_no | group_no | copay_amount | coverage | effective_date | termination_date | prescription_id | medication_name | schedule | dosage | frequency | duration | prescription_status | date_prescribed | expiration_date
+
+-- Sample Results:
+-- 1000000000 | Xavier | Martin | 1995-12-13 | M | 2402351205 | Falls Church | VA | sms | Giant Pharmacy Rockville | UnitedHealthcare | POL000114251 | G75104 | 20.00 | Employee health plan | 2025-08-15 00:00:00+00 | 2027-01-24 00:00:00+00 | NULL | NULL | NULL | NULL | NULL | NULL | NULL | NULL | NULL
+-- 1000000000 | Xavier | Martin | 1995-12-13 | M | 3014805841 | Falls Church | VA | sms | Giant Pharmacy Rockville | UnitedHealthcare | POL000114251 | G75104 | 20.00 | Employee health plan | 2025-08-15 00:00:00+00 | 2027-01-24 00:00:00+00 | NULL | NULL | NULL | NULL | NULL | NULL | NULL | NULL | NULL
+
+
+
+
+-- Query #1: 2nd example: Patient Care Coordination (Appointment Based)
+-- Clinical/Financial/Operational Context: For a patient arriving for an appointment, clinicians and front-desk staff need one view of demographics, insurance coverage, and active prescriptions.
+-- Tables Used: appointment, patient, phone_numbers, insurance, prescription, medication, provider_availability
+-- Complexity Features: INNER JOIN, LEFT JOINs, filtering, ordering
+
+SELECT
+    a.appointment_id,
+    p.MRN,
+    p.first_name,
+    p.last_name,
+    p.dob,
+    p.gender,
+    pn.number AS phone_number,
+    p.city,
+    p.state,
+    p.communication_pref,
+    p.pharmacy_pref,
+    pa.slot_date,
+    pa.start_time,
+    pa.end_time,
+
+    i.insurance_company,
+    i.policy_no,
+    i.group_no,
+    i.copay_amount,
+    i.coverage,
+
+    pr.prescription_id,
+    m.medication_name,
+    m.schedule,
+    pr.dosage,
+    pr.frequency,
+    pr.duration,
+    pr.prescription_status
+
+FROM appointment a
+JOIN patient p
+    ON a.MRN = p.MRN
+JOIN provider_availability pa
+    ON a.slot_id = pa.slot_id
+LEFT JOIN phone_numbers pn
+    ON p.MRN = pn.MRN
+LEFT JOIN insurance i
+    ON p.MRN = i.MRN
+   AND CURRENT_TIMESTAMP BETWEEN i.effective_date AND i.termination_date
+LEFT JOIN prescription pr
+    ON p.MRN = pr.MRN
+   AND pr.prescription_status = 'active'
+   AND (pr.expiration_date IS NULL OR pr.expiration_date > CURRENT_TIMESTAMP)
+LEFT JOIN medication m
+    ON pr.medication_id = m.medication_id
+WHERE a.appointment_id = 1
+ORDER BY m.medication_name;
+
+
+-- Expected Output:
+-- One row per active prescription for a patient tied to a specific appointment.
+-- Includes appointment details, patient demographics, contact info,
+-- scheduled visit time, current insurance coverage, and active prescriptions.
+
+-- Columns: appointment_id | MRN | first_name | last_name | dob | gender | phone_number | city | state | communication_pref | pharmacy_pref | slot_date | start_time | end_time | insurance_company | policy_no | group_no | copay_amount | coverage | prescription_id | medication_name | schedule | dosage | frequency | duration | prescription_status
+-- Sample Results:
+-- 1 | 1000000067 | Xavier | Martin | 1997-10-06 | M | 2406329828 | Gaithersburg | MD | phone | Walgreens Bethesda | 2026-05-19 | 09:30:00 | 10:30:00 | Medicare | POL006811549 | G58144 | 20.00 | Medicare Part B | NULL | NULL | NULL | NULL | NULL | NULL | NULL
+
+
+
+
+
+
+
+
+-- Query #2: Medication Safety
+-- Clinical/Financial/Operational Context: Patients with multiple active prescriptions (3 or more in this dataset) are at increased risk for polypharmacy...
+-- Tables Used: prescription, patient, provider, medication
+-- Complexity Features: JOINs, GROUP BY, HAVING, correlated subquery, ordering
+
+SELECT
+    pt.MRN,
+    pt.first_name AS patient_first_name,
+    pt.last_name AS patient_last_name,
+
+    (
+        SELECT COUNT(*)
+        FROM prescription pr2
+        WHERE pr2.MRN = pt.MRN
+          AND pr2.prescription_status = 'active'
+          AND (pr2.expiration_date IS NULL OR pr2.expiration_date > CURRENT_TIMESTAMP)
+    ) AS active_prescription_count,
+
+    pr.prescription_id,
+    m.medication_name,
+
+    prv.provider_id,
+    prv.first_name AS provider_first_name,
+    prv.last_name AS provider_last_name,
+    prv.provider_type
+
+FROM prescription pr
+JOIN patient pt
+    ON pr.MRN = pt.MRN
+LEFT JOIN medication m
+    ON pr.medication_id = m.medication_id
+LEFT JOIN provider prv
+    ON pr.provider_id = prv.provider_id
+
+WHERE pr.prescription_status = 'active'
+  AND (pr.expiration_date IS NULL OR pr.expiration_date > CURRENT_TIMESTAMP)
+  AND (
+        SELECT COUNT(*)
+        FROM prescription pr2
+        WHERE pr2.MRN = pt.MRN
+          AND pr2.prescription_status = 'active'
+          AND (pr2.expiration_date IS NULL OR pr2.expiration_date > CURRENT_TIMESTAMP)
+      ) >= 3
+
+ORDER BY
+    active_prescription_count DESC,
+    pt.last_name,
+    pt.first_name,
+    m.medication_name;
+
+-- Expected Output: One row per active prescription for each patient with 5 or more active prescriptions. Columns show patient identity, total active prescription count, medication name, and prescribing provider details.
+-- Columns: mrn | patient_first_name | patient_last_name | active_prescription_count | prescription_id | medication_name | provider_id | provider_first_name | provider_last_name | provider_type
+-- Sample Results:
+-- -- 1000000030 | Sofia | White | 3 | 65 | Cefdinir     | 18 | Samuel | Diaz   | Physician
+-- -- 1000000030 | Sofia | White | 3 | 19 | Clopidogrel  | 21 | Lily   | Chen   | Physician
+-- -- 1000000030 | Sofia | White | 3 | 81 | Clopidogrel  | 23 | Ella   | Howard | Physician
+
+
+
+
+
+
+
+
+
+-- Query #3: Provider Workload
+-- Clinical/Financial/Operational Context: Providers and scheduling staff need visibility into upcoming appointments in order to prepare charts, rooms, and staffing resources.
+-- Tables Used: provider, provider_availability, appointment, patient, facility
+-- Complexity Features: INNER JOINs, date filtering, ordering output
+
+SELECT
+    prv.provider_id,
+    prv.first_name AS provider_first_name,
+    prv.last_name AS provider_last_name,
+    prv.provider_type,
+
+    pa.slot_date,
+    pa.start_time,
+    pa.end_time,
+
+    f.facility_id,
+    f.facility_name,
+
+    a.appointment_id,
+    pt.MRN,
+    pt.first_name AS patient_first_name,
+    pt.last_name AS patient_last_name,
+    a.appt_type,
+    a.appt_status,
+    a.visit_reason
+
+FROM provider_availability pa
+JOIN provider prv
+    ON pa.provider_id = prv.provider_id
+JOIN appointment a
+    ON pa.slot_id = a.slot_id
+JOIN patient pt
+    ON a.MRN = pt.MRN
+JOIN facility f
+    ON pa.facility_id = f.facility_id
+
+WHERE pa.slot_date >= CURRENT_DATE
+  AND a.appt_status IN ('scheduled', 'confirmed')
+
+ORDER BY
+    prv.last_name,
+    prv.first_name,
+    pa.slot_date,
+    pa.start_time;
+
+-- Expected Output: One row per upcoming appointment, including provider details, appointment date and time, facility, patient name, appointment type, status, and reason for visit.
+-- Columns: provider_id | provider_first_name | provider_last_name | provider_type | slot_date | start_time | end_time | facility_id | facility_name | appointment_id | mrn | patient_first_name | patient_last_name | appt_type | appt_status | visit_reason
+-- Sample Results:
+-- 17 | Zoe    | Baker   | Physician | 2026-04-19 | 15:00:00 | 15:45:00 | 3 | Chesapeake Children's Hospital | 106 | 1000000028 | Meera | Wilson  | telehealth  | confirmed | Mood and sleep concerns
+-- 17 | Zoe    | Baker   | Physician | 2026-04-19 | 16:00:00 | 16:45:00 | 3 | Chesapeake Children's Hospital | 184 | 1000000033 | Caleb | Edwards | telehealth  | scheduled | Diabetes monitoring
+-- 17 | Zoe    | Baker   | Physician | 2026-04-20 | 08:30:00 | 09:00:00 | 6 | Capitol Primary Care Clinic   | 182 | 1000000022 | Chloe | Martin  | new_patient | scheduled | Upper respiratory symptoms
+
+
+
+
+
+
+
+-- Query #4: Insurance Coverage Summary
+-- Clinical/Financial/Operational Context: Administrative and revenue-cycle teams need payer-level summaries showing how many patients are covered by each insurer and the average copay burden associated with that insurer.
+-- Tables Used: insurance
+-- Complexity Features: GROUP BY, DISTINCT counting, aggregates, ordering
+
+SELECT
+    insurance_company,
+    COUNT(DISTINCT MRN) AS covered_patient_count,
+    ROUND(AVG(copay_amount), 2) AS avg_copay_amount,
+    MIN(copay_amount) AS min_copay_amount,
+    MAX(copay_amount) AS max_copay_amount
+FROM insurance
+WHERE CURRENT_TIMESTAMP BETWEEN effective_date AND termination_date
+GROUP BY insurance_company
+ORDER BY covered_patient_count DESC, insurance_company;
+
+-- Expected Output: One row per active insurance company, showing the number of distinct covered patients and the average, minimum, and maximum copay amounts.
+-- Columns: insurance_company | covered_patient_count | avg_copay_amount | min_copay_amount | max_copay_amount
+-- Sample Results:
+-- -- Maryland Medicaid              | 18 | 25.00 | 0.00  | 50.00
+-- -- BlueCross BlueShield of Maryland | 17 | 23.24 | 0.00  | 50.00
+-- -- Kaiser Permanente              | 13 | 28.46 | 10.00 | 50.00
+
+
+
+
+
+
 -- Query #5: Prescription Costs
 -- Clinical/Financial/Operational Context: List all active prescriptions with patient name, medication, and insurance policy, ordered by patient.
 -- Tables Used: prescription, patient, medication, insurance
