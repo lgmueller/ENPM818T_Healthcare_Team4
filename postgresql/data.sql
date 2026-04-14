@@ -31,6 +31,8 @@
 --   insurance_diagnosis_codes: 77
 --   insurance_procedures_codes: 79
 
+
+
 INSERT INTO facility (facility_name, facility_type, phone, address_street, address_city, address_state, address_zipcode) VALUES
 ('Capital Regional Medical Center', 'hospital', '2025551001', '1100 East-West Hwy', 'Silver Spring', 'MD', '20910'),
 ('Potomac Community Hospital', 'hospital', '2025551002', '4500 River Rd', 'Bethesda', 'MD', '20816'),
@@ -48,6 +50,11 @@ INSERT INTO facility (facility_name, facility_type, phone, address_street, addre
 ('Annapolis Oncology Center', 'clinic', '2025551109', '2001 Medical Pkwy', 'Annapolis', 'MD', '21401'),
 ('Fairfax Surgical Specialists', 'clinic', '2025551110', '3300 Gallows Rd', 'Falls Church', 'VA', '22042'),
 ('Prince George''''s Urgent Care', 'clinic', '2025551111', '805 Brightseat Rd', 'Landover', 'MD', '20785');
+
+
+
+
+
 INSERT INTO provider (first_name, middle_name, last_name, provider_type, npi, can_prescribe) VALUES
 ('Olivia', NULL, 'Bennett', 'Physician', '8000000001', TRUE),
 ('Marcus', 'J.', 'Reed', 'Physician', '8000000002', TRUE),
@@ -85,6 +92,11 @@ INSERT INTO provider (first_name, middle_name, last_name, provider_type, npi, ca
 ('Owen', NULL, 'Flores', 'Physician', '8000000034', TRUE),
 ('Violet', NULL, 'Hughes', 'Nurse Practitioner', '8000000035', TRUE),
 ('Mateo', NULL, 'Russell', 'Physician', '8000000036', TRUE);
+
+
+
+
+
 INSERT INTO med_license (license_no, provider_id, state, expiration_date) VALUES
 ('DC20271001', 1, 'DC', '2027-10-12'),
 ('MD20281002', 2, 'MD', '2028-05-19'),
@@ -133,6 +145,11 @@ INSERT INTO med_license (license_no, provider_id, state, expiration_date) VALUES
 ('VA20601034', 34, 'VA', '2028-03-11'),
 ('VA20611035', 35, 'VA', '2028-05-20'),
 ('VA20621036', 36, 'VA', '2028-11-15');
+
+
+
+
+
 INSERT INTO dea_no (dea_no, provider_id, state) VALUES
 ('BC9990608', 1, 'DC'),
 ('QG1629072', 2, 'MD'),
@@ -168,6 +185,11 @@ INSERT INTO dea_no (dea_no, provider_id, state) VALUES
 ('CW5380786', 34, 'VA'),
 ('LY4737842', 35, 'VA'),
 ('KU4742018', 36, 'VA');
+
+
+
+
+
 INSERT INTO board_certs (provider_id, certification) VALUES
 (1, 'Family Medicine'),
 (2, 'Cardiovascular Disease'),
@@ -205,6 +227,11 @@ INSERT INTO board_certs (provider_id, certification) VALUES
 (34, 'Surgery'),
 (35, 'Family Nurse Practitioner'),
 (36, 'Cardiology');
+
+
+
+
+
 INSERT INTO speciality (provider_id, specialty) VALUES
 (1, 'primary care'),
 (2, 'cardiology'),
@@ -242,6 +269,10 @@ INSERT INTO speciality (provider_id, specialty) VALUES
 (34, 'surgery'),
 (35, 'primary care'),
 (36, 'cardiology');
+
+
+
+
 INSERT INTO med_degrees (provider_id, degree, school) VALUES
 (1, 'MD', 'University of Maryland School of Medicine'),
 (2, 'MD', 'Duke University School of Medicine'),
@@ -279,6 +310,10 @@ INSERT INTO med_degrees (provider_id, degree, school) VALUES
 (34, 'MD', 'University of Kentucky College of Medicine'),
 (35, 'MSN', 'George Washington University'),
 (36, 'MD', 'Albert Einstein College of Medicine');
+
+
+
+
 INSERT INTO provider_facility_privilege (provider_id, facility_id, privilege_type, privilege_status) VALUES
 (1, 1, 'attending', 'active'),
 (1, 8, 'outpatient', 'active'),
@@ -347,6 +382,11 @@ INSERT INTO provider_facility_privilege (provider_id, facility_id, privilege_typ
 (35, 7, 'outpatient', 'active'),
 (36, 1, 'attending', 'active'),
 (36, 10, 'consulting', 'active');
+
+
+
+
+
 INSERT INTO hospital_room (facility_id, room_number, building, floor, is_available, room_type, capacity) VALUES
 (1, '101', 'East', 1, TRUE, 'observation', 1),
 (1, '102', 'South', 1, TRUE, 'medical_surgical', 2),
@@ -408,6 +448,10 @@ INSERT INTO hospital_room (facility_id, room_number, building, floor, is_availab
 (5, '110', 'North', 3, TRUE, 'telemetry', 1),
 (5, '111', 'Main', 1, TRUE, 'observation', 1),
 (5, '112', 'Main', 3, TRUE, 'observation', 1);
+
+
+
+
 INSERT INTO patient (MRN, first_name, middle_name, last_name, dob, gender, blood_type, street, city, state, zipcode, country, organ_donor_status, height_in, weight_lbs, registration_date, ssn, has_insurance, insurance, primary_provider_id, communication_pref, pharmacy_pref) VALUES
 ('1000000000', 'Xavier', 'G', 'Martin', '1995-12-13', 'M', 'AB+', '574 Maple Ave', 'Falls Church', 'VA', '22042', 'USA', FALSE, 73, 161, '2025-09-20', '809876640', TRUE, 'CareFirst', 35, 'sms', 'Giant Pharmacy Rockville'),
 ('1000000001', 'Ethan', NULL, 'Wilson', '1966-10-27', 'M', 'O+', '3024 Potomac Ave', 'Landover', 'MD', '20785', 'USA', FALSE, 68, 117, '2024-01-07', '839608588', TRUE, 'Maryland Medicaid', 27, 'phone', 'Kaiser Pharmacy Gaithersburg'),
@@ -519,6 +563,10 @@ INSERT INTO patient (MRN, first_name, middle_name, last_name, dob, gender, blood
 ('1000000107', 'Lucas', NULL, 'Garcia', '1989-12-15', 'M', 'AB+', '4117 Cherry Blossom Ct', 'Greenbelt', 'MD', '20770', 'USA', FALSE, 70, 180, '2026-02-04', '821536295', TRUE, 'CareFirst', 19, 'sms', 'Walgreens Bethesda'),
 ('1000000108', 'Kai', NULL, 'Anderson', '1982-06-30', 'M', 'A-', '5154 Willow Dr', 'Rockville', 'MD', '20850', 'USA', FALSE, 75, 263, '2023-08-21', '448194116', TRUE, 'Tricare East', 1, 'email', 'Giant Pharmacy Rockville'),
 ('1000000109', 'Chloe', NULL, 'Turner', '1951-01-26', 'F', 'B-', '428 Cedar Ln', 'Bethesda', 'MD', '20814', 'USA', TRUE, 72, 146, '2023-10-05', '717469223', TRUE, 'Aetna', 5, 'email', 'Kaiser Pharmacy Gaithersburg');
+
+
+
+
 INSERT INTO phone_numbers (MRN, number) VALUES
 ('1000000000', '2402351205'),
 ('1000000000', '3014805841'),
@@ -663,6 +711,10 @@ INSERT INTO phone_numbers (MRN, number) VALUES
 ('1000000107', '2404939536'),
 ('1000000108', '2406930573'),
 ('1000000109', '2401952952');
+
+
+
+
 INSERT INTO emails (MRN, email) VALUES
 ('1000000000', 'xavier.martin0@examplehealth.test'),
 ('1000000001', 'ethan.wilson1@examplehealth.test'),
@@ -797,6 +849,11 @@ INSERT INTO emails (MRN, email) VALUES
 ('1000000107', 'lgarcia107@mail.test'),
 ('1000000108', 'kai.anderson108@examplehealth.test'),
 ('1000000109', 'chloe.turner109@examplehealth.test');
+
+
+
+
+
 INSERT INTO emergency_contacts (MRN, name, relationship, phone) VALUES
 ('1000000000', 'Ariana Harris', 'friend', '2021032016'),
 ('1000000001', 'Caleb Nelson', 'child', '2023452397'),
@@ -908,6 +965,10 @@ INSERT INTO emergency_contacts (MRN, name, relationship, phone) VALUES
 ('1000000107', 'Anika Patel', 'child', '2028602207'),
 ('1000000108', 'Gabriel Baker', 'partner', '2022136607'),
 ('1000000109', 'Priya Garcia', 'child', '2026723720');
+
+
+
+
 INSERT INTO condition (condition_name) VALUES
 ('Essential hypertension'),
 ('Type 2 diabetes mellitus'),
@@ -925,6 +986,10 @@ INSERT INTO condition (condition_name) VALUES
 ('Seasonal allergic rhinitis'),
 ('Chronic low back pain'),
 ('Heart failure');
+
+
+
+
 INSERT INTO patient_condition (MRN, condition_id, diagnosis_date, status, notes) VALUES
 ('1000000000', 1, '2023-02-23', 'active', NULL),
 ('1000000000', 4, '2025-11-15', 'controlled', NULL),
@@ -1088,6 +1153,10 @@ INSERT INTO patient_condition (MRN, condition_id, diagnosis_date, status, notes)
 ('1000000107', 3, '2025-07-30', 'monitoring', NULL),
 ('1000000108', 16, '2024-08-04', 'active', 'Lifestyle counseling provided'),
 ('1000000109', 8, '2026-02-15', 'monitoring', NULL);
+
+
+
+
 INSERT INTO allergy (allergen_name) VALUES
 ('Penicillin'),
 ('Peanuts'),
@@ -1101,6 +1170,10 @@ INSERT INTO allergy (allergen_name) VALUES
 ('Cats'),
 ('Dust mites'),
 ('Bee venom');
+
+
+
+
 INSERT INTO patient_allergy (MRN, allergy_id, reaction, severity, date_recorded) VALUES
 ('1000000000', 1, 'nausea', 'moderate', '2023-12-27'),
 ('1000000002', 1, 'shortness of breath', 'severe', '2022-03-14'),
@@ -1175,6 +1248,10 @@ INSERT INTO patient_allergy (MRN, allergy_id, reaction, severity, date_recorded)
 ('1000000105', 6, 'shortness of breath', 'severe', '2023-09-03'),
 ('1000000107', 12, 'hives', 'severe', '2022-08-14'),
 ('1000000109', 4, 'nausea', 'severe', '2022-02-07');
+
+
+
+
 INSERT INTO provider_availability (provider_id, facility_id, slot_date, start_time, end_time, slot_status) VALUES
 (5, 6, '2026-05-19', '09:30:00', '10:30:00', 'booked'),
 (11, 3, '2025-12-11', '14:15:00', '15:15:00', 'booked'),
@@ -1406,6 +1483,9 @@ INSERT INTO provider_availability (provider_id, facility_id, slot_date, start_ti
 (28, 2, '2026-02-08', '14:00:00', '14:15:00', 'booked'),
 (35, 6, '2025-12-01', '16:15:00', '16:30:00', 'booked'),
 (21, 2, '2025-12-28', '13:15:00', '13:30:00', 'booked');
+
+
+
 INSERT INTO appointment (MRN, slot_id, appt_type, appt_status, visit_reason, previous_admission_id) VALUES
 ('1000000067', 1, 'procedure', 'scheduled', 'Diabetes monitoring', NULL),
 ('1000000061', 2, 'routine_checkup', 'completed', 'Pre-procedure evaluation', NULL),
@@ -1637,6 +1717,10 @@ INSERT INTO appointment (MRN, slot_id, appt_type, appt_status, visit_reason, pre
 ('1000000004', 228, 'urgent_care', 'completed', 'Medication management', NULL),
 ('1000000107', 229, 'routine_checkup', 'completed', 'Neurology follow-up', NULL),
 ('1000000048', 230, 'urgent_care', 'no_show', 'Upper respiratory symptoms', NULL);
+
+
+
+
 INSERT INTO admission (MRN, provider_id, room_id, admission_datetime, admission_diagnosis, admission_type, expected_length_of_stay, discharge_datetime, discharge_disposition, discharge_diagnosis, discharge_instructions) VALUES
 ('1000000001', 32, 4, '2026-01-10 21:00:00', 'Postoperative observation', 'urgent', '6 days', NULL, NULL, NULL, NULL),
 ('1000000034', 30, 17, '2025-10-21 12:00:00', 'Syncope', 'observation', '3 days', NULL, NULL, NULL, NULL),
@@ -1672,6 +1756,9 @@ INSERT INTO admission (MRN, provider_id, room_id, admission_datetime, admission_
 ('1000000103', 14, 33, '2025-12-05 05:00:00', 'Acute appendicitis', 'observation', '10 days', '2025-12-15 08:00:00', 'rehabilitation', 'Infection improved', 'Continue discharge medications as listed'),
 ('1000000019', 7, 28, '2025-10-10 03:00:00', 'Cellulitis of lower extremity', 'observation', '14 days', '2025-10-24 08:00:00', 'skilled nursing facility', 'Improved pneumonia', 'Follow up with primary care within 1 week'),
 ('1000000074', 26, 56, '2026-02-12 18:00:00', 'Stroke rule-out', 'observation', '12 days', '2026-02-25 02:00:00', 'home', 'Improved pneumonia', 'Home physical therapy recommended');
+
+
+
 INSERT INTO medication (medication_name, schedule) VALUES
 ('Lisinopril', NULL),
 ('Amlodipine', NULL),
@@ -1709,6 +1796,9 @@ INSERT INTO medication (medication_name, schedule) VALUES
 ('Furosemide', NULL),
 ('Warfarin', NULL),
 ('Meloxicam', NULL);
+
+
+
 INSERT INTO prescription (MRN, provider_id, medication_id, date_prescribed, expiration_date, dosage, frequency, duration, prescription_status, max_num_refills, special_instructions) VALUES
 ('1000000098', 12, 39, '2026-01-31 09:00:00', '2026-03-02 09:00:00', '4 mg', 'every 8 hours as needed nausea', '5 days', 'active', 0, 'Finish entire course'),
 ('1000000051', 12, 21, '2025-12-02 09:00:00', '2026-01-01 09:00:00', '500 mg', 'twice daily with food', '14 days', 'active', 0, NULL),
@@ -1870,6 +1960,9 @@ INSERT INTO prescription (MRN, provider_id, medication_id, date_prescribed, expi
 ('1000000086', 26, 22, '2026-02-22 09:00:00', '2026-03-24 09:00:00', '500 mg', 'three times daily', '10 days', 'active', 0, 'Avoid alcohol'),
 ('1000000107', 5, 29, '2025-11-08 10:45:00', '2025-12-08 10:45:00', '0.25 mg', 'twice daily as needed', '14 days', 'completed', 0, 'Finish entire course'),
 ('1000000014', 26, 22, '2025-12-20 11:30:00', '2026-01-19 11:30:00', '500 mg', 'three times daily', '10 days', 'completed', 0, 'Do not drive after dosing');
+
+
+
 INSERT INTO refill_history (prescription_id, date_refilled, pharmacy) VALUES
 (6, '2026-02-25 12:30:00', 'Giant Pharmacy'),
 (6, '2026-03-25 12:30:00', 'Safeway Pharmacy'),
@@ -1922,6 +2015,9 @@ INSERT INTO refill_history (prescription_id, date_refilled, pharmacy) VALUES
 (155, '2026-01-30 10:45:00', 'CVS'),
 (155, '2026-03-04 10:45:00', 'Giant Pharmacy'),
 (157, '2025-12-12 16:45:00', 'Kaiser Pharmacy');
+
+
+
 INSERT INTO lab_order (MRN, provider_id, facility_id, date_ordered, lab_priority, is_completed) VALUES
 ('1000000067', 3, 13, '2025-12-25 14:00:00', 'stat', TRUE),
 ('1000000004', 4, 11, '2026-02-25 09:30:00', 'routine', TRUE),
@@ -2025,6 +2121,9 @@ INSERT INTO lab_order (MRN, provider_id, facility_id, date_ordered, lab_priority
 ('1000000022', 10, 4, '2026-01-12 10:00:00', 'routine', TRUE),
 ('1000000067', 33, 13, '2025-11-15 18:00:00', 'stat', TRUE),
 ('1000000094', 36, 10, '2025-11-15 07:45:00', 'routine', TRUE);
+
+
+
 INSERT INTO lab_test (order_id, test_type, date_of_completion, pass_flag, test_value_result, ref_range_low, ref_range_high, abnormal_flag, interpretation_notes) VALUES
 (1, 'BMP', '2025-12-27 12:00:00', TRUE, '137.1', '135', '145', FALSE, NULL),
 (1, 'BMP', '2025-12-27 12:00:00', TRUE, '4.5', '3.5', '5.1', FALSE, NULL),
@@ -2255,6 +2354,9 @@ INSERT INTO lab_test (order_id, test_type, date_of_completion, pass_flag, test_v
 (101, 'CBC', '2025-11-17 01:00:00', FALSE, '11.67', '12.0', '17.5', TRUE, 'Critical value called to provider'),
 (101, 'CBC', '2025-11-17 01:00:00', TRUE, '350.4', '150', '450', FALSE, NULL),
 (102, 'TSH', '2025-11-15 19:45:00', TRUE, '2.08', '0.4', '4.5', FALSE, NULL);
+
+
+
 INSERT INTO insurance (MRN, policy_no, group_no, copay_amount, coverage, insurance_company, effective_date, termination_date) VALUES
 ('1000000000', 'POL000114251', 'G75104', 20.00, 'Employee health plan', 'UnitedHealthcare', '2025-08-15 00:00:00', '2027-01-24 00:00:00'),
 ('1000000001', 'POL000215923', 'G90715', 25.00, 'HMO medical', 'Cigna', '2025-07-08 00:00:00', '2027-05-28 00:00:00'),
@@ -2380,6 +2482,9 @@ INSERT INTO insurance (MRN, policy_no, group_no, copay_amount, coverage, insuran
 ('1000000108', 'POL010918321', 'G95531', 10.00, 'Commercial medical', 'Humana', '2025-04-27 00:00:00', '2026-07-27 00:00:00'),
 ('1000000109', 'POL011019275', 'G46942', 10.00, 'Dependent coverage', 'Maryland Medicaid', '2025-02-10 00:00:00', '2026-06-26 00:00:00'),
 ('1000000109', 'POL011028617', 'G80535', 30.00, 'Employee health plan', 'Cigna', '2025-08-30 00:00:00', '2027-10-11 00:00:00');
+
+
+
 INSERT INTO insurance_claim (MRN, service_date, charge_amount, insurance_claim_status, patient_responsibility, denial_reason) VALUES
 ('1000000000', '2025-10-18 13:00:00', 726.59, 'submitted', 68.44, NULL),
 ('1000000077', '2025-10-17 09:00:00', 2198.27, 'submitted', 314.60, NULL),
@@ -2441,6 +2546,8 @@ INSERT INTO insurance_claim (MRN, service_date, charge_amount, insurance_claim_s
 ('1000000076', '2026-01-22 16:00:00', 1936.59, 'denied', 1936.59, 'CO-16'),
 ('1000000011', '2025-12-14 12:00:00', 1003.05, 'submitted', 118.27, NULL),
 ('1000000007', '2025-11-15 18:00:00', 875.08, 'submitted', 68.55, NULL);
+
+
 INSERT INTO payment (claim_id, MRN, amount, payment_date, payment_source) VALUES
 (4, '1000000057', 1357.60, '2026-01-05 15:00:00', 'insurance'),
 (5, '1000000008', 743.52, '2025-12-11 09:00:00', 'insurance'),
@@ -2462,6 +2569,9 @@ INSERT INTO payment (claim_id, MRN, amount, payment_date, payment_source) VALUES
 (50, '1000000015', 733.72, '2026-03-25 16:00:00', 'patient'),
 (52, '1000000015', 620.15, '2026-01-24 16:00:00', 'insurance'),
 (57, '1000000035', 972.48, '2026-03-08 14:00:00', 'insurance');
+
+
+
 INSERT INTO insurance_diagnosis_codes (insurance_claim, diagnosis, notes) VALUES
 (1, 'G43.909', 'Migraine, unspecified, not intractable'),
 (1, 'F32.A', 'Depression, unspecified'),
@@ -2540,6 +2650,8 @@ INSERT INTO insurance_diagnosis_codes (insurance_claim, diagnosis, notes) VALUES
 (59, 'R07.9', 'Chest pain, unspecified'),
 (60, 'F32.A', 'Depression, unspecified'),
 (60, 'J45.909', 'Unspecified asthma, uncomplicated');
+
+
 INSERT INTO insurance_procedures_codes (insurance_claim, procedure_code, notes) VALUES
 (1, '85027', 'Complete blood count'),
 (1, '99213', 'Established patient office visit'),
@@ -2620,3 +2732,4 @@ INSERT INTO insurance_procedures_codes (insurance_claim, procedure_code, notes) 
 (58, '83036', 'Hemoglobin A1c'),
 (59, '93000', 'Electrocardiogram'),
 (60, '84443', 'TSH');
+
