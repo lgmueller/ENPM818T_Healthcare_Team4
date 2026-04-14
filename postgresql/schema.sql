@@ -79,6 +79,8 @@ EXECUTE FUNCTION set_updated_at();
 
 
 -- Patient table
+-- NOTE: SSN is stored as a 9-digit numeric string to satisfy schema-level validation (CHECK constraint). While real-world SSNs are formatted as XXX-XX-XXXX, hyphens are excluded to enforce consistent storage and validation.
+
 CREATE TABLE patient (
     MRN CHAR(10) PRIMARY KEY,
 
@@ -164,14 +166,6 @@ ON patient(primary_provider_id);
 
 
 
-
-
-
-
--- testing table provider by inserting values
-
-
---testing FK
 
 
 
@@ -586,6 +580,8 @@ CREATE TRIGGER trg_dea_no_updated_at
 BEFORE UPDATE ON dea_no
 FOR EACH ROW
 EXECUTE FUNCTION set_updated_at();
+
+
 
 
 
