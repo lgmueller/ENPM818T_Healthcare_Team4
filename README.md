@@ -137,16 +137,16 @@ pytest
 ```
 ENPM818T_Healthcare_Team4/
 ├──src/
-|    ├── config/             # Database connection details
-|    ├── models/             # Dataclass for entities
-|    ├── repositories/       # SQL queries and CRUD operations
-|    ├── services/           # Business logic layer
-|    ├── cli/                # CLI interface
-|    ├── main.py             # Starting point of the application
+│    ├── config/             # Database connection details
+│    ├── models/             # Dataclass for entities
+│    ├── repositories/       # SQL queries and CRUD operations
+│    ├── services/           # Business logic layer
+│    ├── cli/                # CLI interface
+│    ├── main.py             # Starting point of the application
 ├── postgresql/
-|    ├── schema.sql          # Database schema
-|    ├── data.sql            # Sample data
-|    ├── queries.sql         # Sample queries
+│    ├── schema.sql          # Database schema
+│    ├── data.sql            # Sample data
+│    ├── queries.sql         # Sample queries
 ├── tests/
 ├──.env                     # Environment variables store
 ├── requirements.txt
