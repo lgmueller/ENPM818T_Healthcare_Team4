@@ -4,6 +4,36 @@ from repositories.base_repository import BaseRepository
 
 class AppointmentRepository(BaseRepository):
 
+    # For Second CLI Menu option: "Show provider appointments"
+    # It finds appointments by provider_id using a JOIN with provider_availability over slot_id
+    def find_by_provider(self, provider_id):
+        rows = self._fetch_all(
+            """
+            SELECT a.appointment_id, a.mrn, a.slot_id, a.appt_type, a.appt_status
+            FROM appointment a
+            JOIN provider_availability pa ON a.slot_id = pa.slot_id
+            WHERE pa.provider_id = %s
+            """,
+            (provider_id,)
+        )
+        return [Appointment.from_row(r) for r in rows]
+    
+    # For Third CLI menu: "System dashboard" - count total appointments
+    def count_upcoming_appointments(self):
+        row = self._fetch_one(
+            """
+            SELECT COUNT(*) AS count
+            FROM appointment a
+            JOIN provider_availability pa ON a.slot_id = pa.slot_id
+            WHERE pa.slot_date >= CURRENT_DATE
+            """,
+            ()
+        )
+        return row["count"]
+    
+    
+    # EXTRA methods for completeness - not used in CLI but useful for future extensions
+
     def find_by_id(self, appointment_id):
         row = self._fetch_one(
             "SELECT * FROM appointment WHERE appointment_id = %s",
@@ -62,10 +92,10 @@ class AppointmentRepository(BaseRepository):
             (appointment_id,)
         )
 
-    # 🔥 Custom query (important for grading)
     def find_by_patient(self, mrn):
         rows = self._fetch_all(
             "SELECT * FROM appointment WHERE mrn = %s ORDER BY appointment_id",
             (mrn,)
         )
         return [Appointment.from_row(r) for r in rows]
+    

@@ -6,8 +6,14 @@ class InsuranceRepository(BaseRepository):
 
     def find_by_id(self, insurance_id):
         row = self._fetch_one(
-            "SELECT insurance_id, mrn, policy_no, insurance_company, coverage, group_no, copay_amount, effective_date, expiration_date FROM insurance" \
-            " WHERE insurance_id = %s",
+            """
+            SELECT 
+                insurance_id, mrn, policy_no, insurance_company, 
+                coverage, group_no, copay_amount, effective_date, 
+                expiration_date 
+            FROM insurance
+            WHERE insurance_id = %s
+            """,
             (insurance_id,)
         )
         return Insurance.from_row(row) if row else None
@@ -15,7 +21,11 @@ class InsuranceRepository(BaseRepository):
     def find_all(self, limit=20, offset=0):
         rows = self._fetch_all(
             """
-            SELECT insurance_id, mrn, policy_no, insurance_company, coverage, group_no, copay_amount, effective_date, expiration_date FROM insurance
+            SELECT 
+                insurance_id, mrn, policy_no, insurance_company, 
+                coverage, group_no, copay_amount, effective_date, 
+                expiration_date 
+            FROM insurance
             ORDER BY insurance_id
             LIMIT %s OFFSET %s
             """,

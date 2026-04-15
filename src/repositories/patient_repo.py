@@ -4,12 +4,24 @@ from src.repositories.base_repository import BaseRepository
 
 class PatientRepository(BaseRepository):
 
+    # For first CLI menu: "Look up patient by MRN"
     def find_by_id(self, mrn):
         row = self._fetch_one(
             "SELECT * FROM patient WHERE mrn = %s",
             (mrn,)
         )
         return Patient.from_row(row) if row else None
+    
+    # For Third CLI menu: "System dashboard" - count total patients
+    def count_patients(self):
+        row = self._fetch_one(
+            "SELECT COUNT(*) AS count FROM patient",
+            ()
+        )
+        return row["count"]
+    
+
+    # EXTRA methods for completeness - not used in CLI but useful for future extensions
 
     def find_all(self, limit=20, offset=0):
         rows = self._fetch_all(

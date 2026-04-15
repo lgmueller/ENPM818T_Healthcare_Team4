@@ -4,6 +4,21 @@ from repositories.base_repository import BaseRepository
 
 class PrescriptionRepository(BaseRepository):
 
+    # For Third CLI menu: "System dashboard" - count total active prescriptions
+    def count_active_prescriptions(self):
+        row = self._fetch_one(
+            """
+            SELECT COUNT(*) AS count
+            FROM prescription
+            WHERE prescription_status = 'active'
+            """,
+            ()
+        )
+        return row["count"]
+    
+    
+    # EXTRA methods for completeness - not used in CLI but useful for future extensions
+
     def find_by_id(self, prescription_id):
         row = self._fetch_one(
             "SELECT * FROM prescription WHERE prescription_id = %s",
@@ -90,3 +105,4 @@ class PrescriptionRepository(BaseRepository):
             (mrn,)
         )
         return [Prescription.from_row(r) for r in rows]
+    
