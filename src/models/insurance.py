@@ -8,7 +8,11 @@ class Insurance:
     mrn: str
     policy_no: str
     insurance_company: str
-    coverage: str
+    coverage: str 
+    group_no: str
+    copay_amount: float
+    effective_date: datetime
+    termination_date: datetime
 
     @classmethod
     def from_row(cls, row: dict | None):
@@ -19,5 +23,9 @@ class Insurance:
             mrn=row["mrn"],
             policy_no=row["policy_no"],
             insurance_company=row["insurance_company"],
-            coverage=row["coverage"]
+            coverage=row["coverage"],
+            group_no=row["group_no"],
+            copay_amount=row["copay_amount"],
+            effective_date=row["effective_date"],
+            termination_date=row["termination_date"]
         )
