@@ -22,7 +22,7 @@ class AppointmentRepository(BaseRepository):
         self._execute(
             """
             INSERT INTO appointment (
-                mrn, slot_id, appt_type, appt_status, visit_reason
+                mrn, slot_id, appt_type, appt_status, visit_reason, previous_admission_id
             )
             VALUES (%s, %s, %s, %s, %s)
             """,
@@ -42,13 +42,15 @@ class AppointmentRepository(BaseRepository):
             UPDATE appointment
             SET appt_type=%s,
                 appt_status=%s,
-                visit_reason=%s
+                visit_reason=COALESCE(%s, visit_reason),
+                previous_admission_id=COALESCE(%s, previous_admission_id)
             WHERE appointment_id=%s
             """,
             (
                 appt.appt_type,
                 appt.appt_status,
                 getattr(appt, "visit_reason", None),
+                appt.previous_admission_id,
                 appt.appointment_id
             )
         )

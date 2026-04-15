@@ -50,14 +50,14 @@ class PrescriptionRepository(BaseRepository):
         self._execute(
             """
             UPDATE prescription
-            SET provider_id=%s,
-                expiration_date=%s,
-                dosage=%s,
-                frequency=%s,
-                duration=%s,
+            SET provider_id=COALESCE(%s, provider_id),
+                expiration_date=COALESCE(%s, expiration_date),
+                dosage=COALESCE(%s, dosage),
+                frequency=COALESCE(%s, frequency),
+                duration=COALESCE(%s, duration),
                 prescription_status=%s,
                 max_num_refills=%s,
-                special_instructions=%s
+                special_instructions=COALESCE(%s, special_instructions)
             WHERE prescription_id=%s
             """,
             (

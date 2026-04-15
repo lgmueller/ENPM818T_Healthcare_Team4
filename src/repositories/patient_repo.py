@@ -23,9 +23,9 @@ class PatientRepository(BaseRepository):
             """
             INSERT INTO patient (
                 mrn, first_name, middle_name, last_name, dob, gender,
-                primary_provider_id
+                primary_provider_id, has_insurance, registration_date
             )
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
             """,
             (
                 patient.mrn,
@@ -34,7 +34,9 @@ class PatientRepository(BaseRepository):
                 patient.last_name,
                 patient.dob,
                 patient.gender,
-                patient.primary_provider_id
+                patient.primary_provider_id,
+                patient.has_insurance,
+                patient.registration_date
             )
         )
         return patient
@@ -44,10 +46,11 @@ class PatientRepository(BaseRepository):
             """
             UPDATE patient
             SET first_name=%s,
-                middle_name=%s,
+                middle_name=COALESCE(%s, middle_name),
                 last_name=%s,
-                gender=%s,
-                primary_provider_id=%s
+                gender=coalesce(%s, gender),
+                primary_provider_id=COALESCE(%s, primary_provider_id),
+                has_insurance=%s
             WHERE mrn=%s
             """,
             (
@@ -56,6 +59,7 @@ class PatientRepository(BaseRepository):
                 patient.last_name,
                 patient.gender,
                 patient.primary_provider_id,
+                patient.has_insurance,
                 patient.mrn
             )
         )
