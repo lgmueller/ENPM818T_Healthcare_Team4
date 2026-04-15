@@ -22,14 +22,18 @@ CREATE TYPE appointment_type_enum AS ENUM (
     'follow_up',
     'consultation',
     'urgent_care',
-    'telehealth'
+    'telehealth', 
+    'routine_checkup', 
+    'procedure'
 );
 
 CREATE TYPE appointment_status_enum AS ENUM (
     'scheduled',
     'completed',
     'cancelled',
-    'no_show'
+    'no_show', 
+    'confirmed', 
+    'under_review'
 );
 
 
@@ -75,6 +79,8 @@ EXECUTE FUNCTION set_updated_at();
 
 
 -- Patient table
+-- NOTE: SSN is stored as a 9-digit numeric string to satisfy schema-level validation (CHECK constraint). While real-world SSNs are formatted as XXX-XX-XXXX, hyphens are excluded to enforce consistent storage and validation.
+
 CREATE TABLE patient (
     MRN CHAR(10) PRIMARY KEY,
 
@@ -160,14 +166,6 @@ ON patient(primary_provider_id);
 
 
 
-
-
-
-
--- testing table provider by inserting values
-
-
---testing FK
 
 
 
@@ -585,7 +583,43 @@ EXECUTE FUNCTION set_updated_at();
 
 
 
-CREATE TABLE hospital_room ();
+
+
+CREATE TABLE hospital_room (
+    room_id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+
+    facility_id INTEGER NOT NULL,
+    room_number VARCHAR(10) NOT NULL,
+    building VARCHAR(50),
+    floor INTEGER,
+    is_available BOOLEAN NOT NULL DEFAULT TRUE,
+    room_type VARCHAR(50) NOT NULL,
+    capacity INTEGER NOT NULL,
+
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_room_facility
+        FOREIGN KEY (facility_id)
+        REFERENCES facility(facility_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+
+    CONSTRAINT uq_room_per_facility
+        UNIQUE (facility_id, room_number),
+
+    CONSTRAINT chk_room_capacity
+        CHECK (capacity > 0)
+);
+
+
+CREATE TRIGGER trg_hospital_room_updated_at
+BEFORE UPDATE ON hospital_room
+FOR EACH ROW
+EXECUTE FUNCTION set_updated_at();
+
+
+
 
 CREATE TYPE hospital_admission_type AS ENUM (
     'emergency', 'urgent', 'elective', 'observation'
@@ -594,32 +628,32 @@ CREATE TYPE hospital_admission_type AS ENUM (
 CREATE TABLE admission (
     admission_id INTEGER GENERATED ALWAYS AS IDENTITY
         PRIMARY KEY, 
-    patient_id INTEGER NOT NULL, 
-    provider_id INTEGER NOT NULL, 
-    room_id INTEGER NOT NULL, 
+    MRN CHAR(10) NOT NULL, 
+    provider_id INTEGER, 
+    room_id INTEGER, 
     admission_datetime TIMESTAMPTZ NOT NULL, 
     admission_diagnosis TEXT, 
     admission_type hospital_admission_type NOT NULL, 
-    expected_length_of_stay VARCHAR(50)
+    expected_length_of_stay VARCHAR(50),
     discharge_datetime TIMESTAMPTZ, 
     discharge_disposition TEXT, 
     discharge_diagnosis TEXT, 
-    discharage_instructions TEXT, 
+    discharge_instructions TEXT, 
 
-    CONSTRAINT fk_patient_id
-        FOREIGN KEY (patient_id)
-        REFERENCES patient(patient_id)
+    CONSTRAINT fk_admission_MRN
+        FOREIGN KEY (MRN)
+        REFERENCES patient(MRN)
         ON DELETE CASCADE,
-    CONSTRAINT fk_provider_id
+    CONSTRAINT fk_admission_provider_id
         FOREIGN KEY (provider_id)
         REFERENCES provider(provider_id)
         ON DELETE SET NULL,
-    CONSTRAINT fk_room_id 
+    CONSTRAINT fk_admission_room_id 
         FOREIGN KEY (room_id)
-        REFERENCES room(room_id)
-        ON DELETE CASCADE,
+        REFERENCES hospital_room(room_id)
+        ON DELETE SET NULL,
     CONSTRAINT chk_time_admitted 
-        CHECK (admission_datetime < discharge_datetime),
+        CHECK (discharge_datetime IS NULL OR admission_datetime < discharge_datetime)
 );
 
 CREATE TABLE medication (
@@ -630,7 +664,7 @@ CREATE TABLE medication (
     schedule VARCHAR(2),
 
     CONSTRAINT chk_med_schedule
-        CHECK (schedule IN ('I', 'II', 'III', 'IV', 'V'))
+        CHECK (schedule is NULL OR schedule IN ('I', 'II', 'III', 'IV', 'V'))
 );
 
 CREATE TYPE prescription_status as ENUM (
@@ -643,8 +677,8 @@ CREATE TYPE prescription_status as ENUM (
 CREATE TABLE prescription (
     prescription_id INTEGER GENERATED ALWAYS AS IDENTITY
         PRIMARY KEY, 
-    patient_id INTEGER NOT NULL, 
-    provider_id INTEGER NOT NULL, 
+    MRN CHAR(10) NOT NULL, 
+    provider_id INTEGER, 
     medication_id INTEGER NOT NULL, 
     date_prescribed TIMESTAMPTZ NOT NULL, 
     expiration_date TIMESTAMPTZ, 
@@ -655,18 +689,18 @@ CREATE TABLE prescription (
     max_num_refills INTEGER NOT NULL, 
     special_instructions TEXT,
     
-    CONSTRAINT fk_patient_id
-        FOREIGN KEY (patient_id)
-        REFERENCES patient(patient_id)
+    CONSTRAINT fk_prescription_MRN
+        FOREIGN KEY (MRN)
+        REFERENCES patient(MRN)
         ON DELETE CASCADE,
-    CONSTRAINT fk_provider_id
+    CONSTRAINT fk_prescription_provider_id
         FOREIGN KEY (provider_id)
         REFERENCES provider(provider_id)
         ON DELETE SET NULL,
-    CONSTRAINT fk_medication_id 
+    CONSTRAINT fk_prescription_medication_id 
         FOREIGN KEY (medication_id)
         REFERENCES medication(medication_id)
-        ON DELETE CASCADE,
+        ON DELETE CASCADE
 );
 
 CREATE TABLE refill_history (
@@ -675,11 +709,11 @@ CREATE TABLE refill_history (
     pharmacy VARCHAR(30),
 
     CONSTRAINT pk_refill_history
-        PRIMARY KEY (prescription_id, date_refilled)
-    CONSTRAINT fk_prescription_id 
+        PRIMARY KEY (prescription_id, date_refilled),
+    CONSTRAINT fk_refill_history_prescription_id 
         FOREIGN KEY (prescription_id)
         REFERENCES prescription(prescription_id)
-        ON DELETE CASCADE,
+        ON DELETE CASCADE
 );
 
 CREATE TYPE lab_priority as ENUM (
@@ -689,25 +723,25 @@ CREATE TYPE lab_priority as ENUM (
 CREATE TABLE lab_order (
     order_id INTEGER GENERATED ALWAYS AS IDENTITY
         PRIMARY KEY, 
-    patient_id INTEGER NOT NULL,
-    provider_id INTEGER NOT NULL, 
-    facility_id INTEGER NOT NULL,
+    MRN CHAR(10) NOT NULL,
+    provider_id INTEGER, 
+    facility_id INTEGER,
     date_ordered TIMESTAMPTZ NOT NULL, 
     lab_priority lab_priority NOT NULL, 
     is_completed BOOLEAN NOT NULL,
 
-    CONSTRAINT fk_patient_id
-        FOREIGN KEY (patient_id)
-        REFERENCES patient(patient_id)
+    CONSTRAINT fk_lab_order_MRN
+        FOREIGN KEY (MRN)
+        REFERENCES patient(MRN)
         ON DELETE CASCADE,
-    CONSTRAINT fk_provider_id
+    CONSTRAINT fk_lab_order_provider_id
         FOREIGN KEY (provider_id)
         REFERENCES provider(provider_id)
         ON DELETE SET NULL,
-    CONSTRAINT facility_id 
+    CONSTRAINT fk_lab_order_facility_id 
         FOREIGN KEY (facility_id)
         REFERENCES facility(facility_id)
-        ON DELETE SET NULL,
+        ON DELETE SET NULL
     
 );
 
@@ -724,16 +758,16 @@ CREATE TABLE lab_test (
     abnormal_flag BOOLEAN NOT NULL, 
     interpretation_notes TEXT,  
 
-    CONSTRAINT fk_order_id
+    CONSTRAINT fk_lab_test_order_id
         FOREIGN KEY (order_id)
         REFERENCES lab_order(order_id)
-        ON DELETE CASCADE,
+        ON DELETE CASCADE
 );
 
 CREATE TABLE insurance (
     insurance_id INTEGER GENERATED ALWAYS AS IDENTITY
         PRIMARY KEY, 
-    patient_id INTEGER NOT NULL,
+    MRN CHAR(10) NOT NULL,
     policy_no VARCHAR(20) NOT NULL, 
     group_no VARCHAR(10) NOT NULL, 
     copay_amount NUMERIC(10,2) NOT NULL, 
@@ -742,33 +776,33 @@ CREATE TABLE insurance (
     effective_date TIMESTAMPTZ NOT NULL, 
     termination_date TIMESTAMPTZ NOT NULL, 
 
-    CONSTRAINT fk_patient_id
-        FOREIGN KEY (patient_id)
-        REFERENCES patient(patient_id)
+    CONSTRAINT fk_lab_test_MRN
+        FOREIGN KEY (MRN)
+        REFERENCES patient(MRN)
         ON DELETE CASCADE,
     CONSTRAINT chk_insurance_dates 
         CHECK (effective_date < termination_date),
     CONSTRAINT chk_insurance_copay 
-        CHECK (copay_amount >= 0.0),
+        CHECK (copay_amount >= 0.0)
 );
 
 CREATE TYPE insurance_claim_status AS ENUM (
-    'draft', 'submitted', 'pending', 'approved', 'denied', 'appealed'
+    'draft', 'submitted', 'pending', 'approved', 'denied', 'appealed', 'partially_approved', 'under_review'
 );
 
 CREATE TABLE insurance_claim (
     claim_id INTEGER GENERATED ALWAYS AS IDENTITY
         PRIMARY KEY, 
-    patient_id INTEGER NOT NULL,
+    MRN CHAR(10) NOT NULL,
     service_date TIMESTAMPTZ NOT NULL, 
     charge_amount NUMERIC(10,2) NOT NULL, 
     insurance_claim_status insurance_claim_status NOT NULL, 
     patient_responsibility NUMERIC(10,2) NOT NULL, 
     denial_reason TEXT,
 
-    CONSTRAINT fk_patient_id
-        FOREIGN KEY (patient_id)
-        REFERENCES patient(patient_id)
+    CONSTRAINT fk_insurance_claim_MRN
+        FOREIGN KEY (MRN)
+        REFERENCES patient(MRN)
         ON DELETE CASCADE,
     CONSTRAINT chk_claim_amounts 
         CHECK (charge_amount >= 0.0 AND patient_responsibility >= 0.0)
@@ -778,21 +812,21 @@ CREATE TABLE payment (
     payment_id INTEGER GENERATED ALWAYS AS IDENTITY
         PRIMARY KEY, 
     claim_id INTEGER NOT NULL, 
-    patient_id INTEGER NOT NULL, 
+    MRN CHAR(10) NOT NULL, 
     amount NUMERIC(10,2) NOT NULL, 
     payment_date TIMESTAMPTZ NOT NULL, 
     payment_source VARCHAR(100),
 
-    CONSTRAINT fk_patient_id
-        FOREIGN KEY (patient_id)
-        REFERENCES patient(patient_id)
+    CONSTRAINT fk_payment_MRN
+        FOREIGN KEY (MRN)
+        REFERENCES patient(MRN)
         ON DELETE CASCADE,
-    CONSTRAINT fk_insurance_claim_id
+    CONSTRAINT fk_payment_insurance_claim_id
         FOREIGN KEY (claim_id)
         REFERENCES insurance_claim(claim_id)
         ON DELETE CASCADE,
     CONSTRAINT chk_payment_amount
-        CHECK (amount >= 0.0),
+        CHECK (amount >= 0.0)
 );
 
 CREATE TABLE insurance_diagnosis_codes (
@@ -800,8 +834,12 @@ CREATE TABLE insurance_diagnosis_codes (
     diagnosis VARCHAR(100), 
     notes TEXT,
 
+    CONSTRAINT fk_insurance_diagnosis_code_insurance_claim
+        FOREIGN KEY (insurance_claim)
+        REFERENCES insurance_claim(claim_id)
+        ON DELETE CASCADE,
     CONSTRAINT pk_insurance_diagnosis 
-        PRIMARY KEY (insurance_claim, diagnosis),
+        PRIMARY KEY (insurance_claim, diagnosis)
 );
 
 CREATE TABLE insurance_procedures_codes (
@@ -809,6 +847,10 @@ CREATE TABLE insurance_procedures_codes (
     procedure_code VARCHAR(100), 
     notes TEXT,
 
+    CONSTRAINT fk_insurance_procedure_code_insurance_claim
+        FOREIGN KEY (insurance_claim)
+        REFERENCES insurance_claim(claim_id)
+        ON DELETE CASCADE,
     CONSTRAINT pk_insurance_procedure_code 
-        PRIMARY KEY (insurance_claim, procedure_code),
+        PRIMARY KEY (insurance_claim, procedure_code)
 );
