@@ -9,6 +9,13 @@ class Prescription:
     medication_id: int
     date_prescribed: datetime
     prescription_status: str
+    expiration_date: datetime | None = None
+    dosage: str | None = None
+    frequency: str | None = None
+    duration: str | None = None
+    max_num_refills: int
+    special_instructions: str | None = None
+
 
     @classmethod
     def from_row(cls, row: dict | None):
@@ -20,5 +27,11 @@ class Prescription:
             provider_id=row.get("provider_id"),
             medication_id=row["medication_id"],
             date_prescribed=row["date_prescribed"],
-            prescription_status=row["prescription_status"]
+            prescription_status=row["prescription_status"],
+            expiration_date=row.get("expiration_date"),
+            dosage=row.get("dosage"),
+            frequency=row.get("frequency"),
+            duration=row.get("duration"),
+            max_num_refills=row["max_num_refills"],
+            special_instructions=row.get("special_instructions")
         )
