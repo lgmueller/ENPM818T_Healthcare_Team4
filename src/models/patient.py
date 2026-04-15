@@ -10,6 +10,8 @@ class Patient:
     dob: date
     gender: str | None = None
     primary_provider_id: int | None = None
+    has_insurance: bool = False
+    registration_date: date | None = None
 
     @classmethod
     def from_row(cls, row: dict | None):
@@ -22,5 +24,7 @@ class Patient:
             last_name=row["last_name"],
             dob=row["dob"],
             gender=row.get("gender"),
-            primary_provider_id=row.get("primary_provider_id")
+            primary_provider_id=row.get("primary_provider_id"),
+            has_insurance=row.get("has_insurance", False),
+            registration_date=row.get("registration_date")
         )
