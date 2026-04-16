@@ -3,11 +3,11 @@
 ## SQL Files 
 | Task     | Team Member      | Time Spent (hrs) | 
 | ------------- | ------------- |-- | 
-| schema.sql (tables, constraints, indexes, triggers) | Simran | -- |
+| schema.sql (tables, constraints, indexes, triggers) | Simran | 3hr |
 | schema.sql (tables, constraints, indexes, triggers) | Lily | 2hr |
-| data.sql | Simran | -- | 
+| data.sql | Simran | 3hr | 
 | data.sql | Lily | 2hr | 
-| queries.sql | Simran |-- | 
+| queries.sql | Simran | 3hr | 
 | queries.sql | Lily |3hr | 
 
 ## Python Application
@@ -23,10 +23,9 @@
 ## Documentation 
 | Task     | Team Member      | Time Spent (hrs) | 
 | ------------- | ------------- |-- | 
-| README.md | -- |-- | 
-| .env.example | -- |-- | 
-| requirements.txt | -- |-- | 
-| team_contributions.md | Lily |1hr | 
+| README.md | Nishtha | 3hr | 
+| README.md | Simran | 1hr |  
+| team_contributions.md | Lily | 1hr | 
 
 ## Percent Contributions 
 | Team Member      | Percentage | 

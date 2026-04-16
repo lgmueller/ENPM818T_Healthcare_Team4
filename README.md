@@ -72,7 +72,7 @@ Exit psql:
 
 ### 3. Load Schema and Data
 
-⚠️ **Important:** PostgreSQL does not automatically switch to the newly created database. You must explicitly connect to it before running the schema.
+⚠️ **Important:** PostgreSQL does not automatically switch to a newly created database. You must explicitly connect to it before running the schema.
 
 
 Run the schema file on the correct database:
@@ -153,7 +153,7 @@ Run the CLI interface:
 python src/main.py
 ```
 
-You will see a menu-driven interface for:
+If running the Python interface, you will see options for:
 
 * Patient lookup
 * Provider appointments
@@ -205,6 +205,65 @@ ENPM818T_Healthcare_Team4/
 
 ---
 
+## 🏥 Database Design Highlights
+
+- Enforced healthcare identifiers:
+  - MRN (10-digit unique identifier)
+  - NPI (10-digit provider identifier)
+  - DEA numbers (2 letters + 7 digits for prescribing providers)
+
+- Appointment scheduling system:
+  - Provider availability stored separately
+  - One-to-one booking enforced via UNIQUE(slot_id)
+
+- Data integrity:
+  - CHECK constraints for SSN, phone numbers, ZIP codes
+  - Foreign key relationships across all major entities
+
+- Triggers:
+  - Automatic `updated_at` timestamp updates for key tables
+
+- Controlled substances:
+  - Identified via medication.schedule
+  - DEA linkage handled via provider DEA records
+  - Cross-table enforcement documented (PostgreSQL limitation)
+
+---
+
+## 🧪 Synthetic Data
+
+All data in this project is fully synthetic and generated to simulate realistic healthcare scenarios.
+
+- No real patient or provider data is used
+- MRNs, NPIs, DEA numbers follow valid formats
+- Data distributions mimic real-world usage:
+  - Appointment statuses (completed, scheduled, no-show)
+  - Insurance coverage patterns
+  - Prescription usage and controlled substances
+  - Lab results including abnormal values
+  
+⚠️ Note: SSNs are stored as 9-digit numeric strings to satisfy schema constraints.
+
+---
+
+## 📊 SQL Queries
+
+The project includes 15 SQL queries covering:
+
+- Clinical workflows (patient care coordination, medication safety)
+- Operational insights (provider workload, appointment breakdown)
+- Financial analysis (insurance coverage, prescription costs)
+
+Each query includes:
+- Clinical or business context
+- Tables used
+- Complexity features (joins, aggregates, filtering)
+- Sample outputs based on synthetic data
+
+⚠️ Note: Queries were adjusted to reflect the synthetic dataset.
+
+---
+
 ## ⚠️ Notes
 
 * Ensure PostgreSQL is running before starting the application
@@ -218,6 +277,6 @@ ENPM818T_Healthcare_Team4/
 * Lily
 * Nishtha
 * Rozan
-* Simran
+* Simran Mohapatra (UID: 121957467)
 
 ---
