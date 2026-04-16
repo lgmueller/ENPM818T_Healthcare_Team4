@@ -50,9 +50,9 @@ cd ENPM818T_Healthcare_Team4
 
 ### 2. Create PostgreSQL Database
 
-Login to PostgreSQL:
+Open PostgreSQL:
 
-```bash
+```sql
 psql -U postgres
 ```
 
@@ -62,25 +62,34 @@ Create the database:
 CREATE DATABASE healthcare_db;
 ```
 
+Exit psql:
+
+```sql
+\q
+```
+
 ---
 
 ### 3. Load Schema and Data
 
-Run the schema file:
+⚠️ **Important:** PostgreSQL does not automatically switch to the newly created database. You must explicitly connect to it before running the schema.
 
-```bash
-psql -U postgres -d healthcare_db -f schema.sql
+
+Run the schema file on the correct database:
+
+```sql
+psql -U postgres -d healthcare_db -f postgresql/schema.sql
 ```
 
 (Optional) Load sample data:
 
-```bash
-psql -U postgres -d healthcare_db -f data.sql
+```sql
+psql -U postgres -d healthcare_db -f postgresql/data.sql
 ```
 
 (Optional, only after loading data) Load sample queries:
-```bash
-psql -U postgres -d healthcare_db -f queries.sql
+```sql
+psql -U postgres -d healthcare_db -f postgresql/queries.sql
 ```
 
 ---
@@ -91,8 +100,8 @@ Create a `.env` file in the root directory:
 
 ```env
 DB_NAME=healthcare_db
-DB_USER=postgres
-DB_PASSWORD=
+DB_USER=<YOUR_DB_RULE>
+DB_PASSWORD=<YOUR_DB_PWD>
 DB_HOST=localhost
 DB_PORT=5432
 ```
