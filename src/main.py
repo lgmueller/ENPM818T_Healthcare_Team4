@@ -1,5 +1,5 @@
 """
-healthcare_management/main.py
+ENPM818T_Healthcare_Team4/main.py
 Entry point. Responsibilities:
   1. Initialize the connection pool (once at startup).
   2. Start the CLI loop.
