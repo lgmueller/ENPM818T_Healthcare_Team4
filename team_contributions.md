@@ -31,7 +31,7 @@
 ## Percent Contributions 
 | Team Member      | Percentage | 
 | ------------- | ------------- |
-| Nishtha Gupta | -- |
-| Simran Mohapatra | -- |
-| Lillian Mueller | -- |
-| Rozan Sonnadara | -- |
+| Nishtha Gupta | 25% |
+| Simran Mohapatra | 25% |
+| Lillian Mueller | 25% |
+| Rozan Sonnadara | 25% |
