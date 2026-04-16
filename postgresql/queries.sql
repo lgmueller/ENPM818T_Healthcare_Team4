@@ -681,19 +681,24 @@ ORDER BY f.facility_id, f.facility_name DESC;
 -- Columns: facility_id | facility_name | total_lab_orders | routine_count | urgent_count | stat_count | routine_percent_completed | urgent_percent_completed | stat_percent_completed
 
 -- Sample Results:
+-- 1  | Capital Regional Medical Center | 8  | 7  | 0 | 1 | 87.50 | 0.00  | 12.50
+-- 2  | Potomac Community Hospital      | 3  | 2  | 1 | 0 | 66.67 | 33.33 | 0.00
+-- 3  | Chesapeake Children's Hospital  | 4  | 2  | 2 | 0 | 50.00 | 50.00 | 0.00
 
 
 
--- Query #15: Prescription Refills
--- Operational Context: Shows all prescriptions that have been refilled in the past week.
--- Tables Used: prescription, patient, provider, medication
--- Complexity Features: INNER JOINs, GROUP BY, aggregates, conditional counting, handling division by zero
+
+
+-- Query #15: Recent Prescription Refills
+-- Operational Context: Shows prescriptions that have been refilled in the past 30 days, which helps pharmacy and care teams monitor ongoing medication adherence and refill activity.
+-- Tables Used: prescription, refill_history, patient, medication
+-- Complexity Features: INNER JOINs, GROUP BY, aggregates, date filtering, ordering
 
 SELECT
     pat.MRN,
     pat.first_name AS patient_first_name,
-    pat.last_name AS patient_last_name, 
-    
+    pat.last_name AS patient_last_name,
+
     pr.prescription_id,
     pr.max_num_refills,
     pr.date_prescribed,
@@ -710,11 +715,15 @@ JOIN medication m
 LEFT JOIN refill_history ref
     ON pr.prescription_id = ref.prescription_id
 WHERE pr.max_num_refills > 0
-  AND pr.date_prescribed >= CURRENT_DATE - INTERVAL '7 days'
+  AND ref.date_refilled >= CURRENT_DATE - INTERVAL '30 days'
 GROUP BY pr.prescription_id, pr.date_prescribed, pat.MRN, pat.first_name, pat.last_name, m.medication_name
 ORDER BY pr.date_prescribed DESC, pat.last_name, pat.first_name, m.medication_name;
 
 
--- Expected Output: table of prescriptions that have been refilled in the past week, showing patient name, prescription details, medication name, and number of refills.
+-- Expected Output: table of prescriptions that have been refilled in the past 30 days, showing patient name, prescription details, medication name, and number of refills.
 -- Columns: MRN | patient_first_name | patient_last_name | prescription_id | max_num_refills | date_prescribed | expiration_date | medication_name | num_refilled
+
 -- Sample Results:
+-- 1000000025 | Julian | Jackson  | 15  | 2 | 2026-03-06 15:45:00+00 | 2026-04-05 15:45:00+00 | Pantoprazole      | 1
+-- 1000000038 | Naomi  | Smith    | 91  | 3 | 2026-02-28 13:15:00+00 | 2026-05-29 13:15:00+00 | Levothyroxine     | 1
+-- 1000000046 | Micah  | Phillips | 54  | 5 | 2026-02-23 16:15:00+00 | 2026-03-25 16:15:00+00 | Insulin glargine  | 1
