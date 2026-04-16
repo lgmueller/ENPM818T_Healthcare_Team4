@@ -1,5 +1,5 @@
 -- Query #1: Example 1: Patient Care Coordination (Patient Based)
--- Clinical/Financial/Operational Context: For a patient arriving for an appointment, clinicians and front-desk staff need one view of demographics, current insurance coverage, and active prescriptions to support safe and efficient care.
+-- Clinical Context: For a patient arriving for an appointment, clinicians and front-desk staff need one view of demographics, current insurance coverage, and active prescriptions to support safe and efficient care.
 -- Tables Used: patient, phone_numbers, insurance, prescription, medication
 -- Complexity Features: LEFT JOINs, date filtering, active-status filtering, ordering output
 
@@ -65,8 +65,8 @@ ORDER BY m.medication_name;
 
 
 
--- Query #1: 2nd example: Patient Care Coordination (Appointment Based)
--- Clinical/Financial/Operational Context: For a patient arriving for an appointment, clinicians and front-desk staff need one view of demographics, insurance coverage, and active prescriptions.
+-- Query #2: 2nd example: Patient Care Coordination (Appointment Based)
+-- Clinical Context: For a patient arriving for an appointment, clinicians and front-desk staff need one view of demographics, insurance coverage, and active prescriptions.
 -- Tables Used: appointment, patient, phone_numbers, insurance, prescription, medication, provider_availability
 -- Complexity Features: INNER JOIN, LEFT JOINs, filtering, ordering
 
@@ -136,8 +136,8 @@ ORDER BY m.medication_name;
 
 
 
--- Query #2: Medication Safety
--- Clinical/Financial/Operational Context: Patients with multiple active prescriptions (3 or more in this dataset) are at increased risk for polypharmacy...
+-- Query #3: Medication Safety
+-- Clinical Context: Patients with multiple active prescriptions (3 or more in this dataset) are at increased risk for polypharmacy...
 -- Tables Used: prescription, patient, provider, medication
 -- Complexity Features: JOINs, GROUP BY, HAVING, correlated subquery, ordering
 
@@ -201,8 +201,8 @@ ORDER BY
 
 
 
--- Query #3: Provider Workload
--- Clinical/Financial/Operational Context: Providers and scheduling staff need visibility into upcoming appointments in order to prepare charts, rooms, and staffing resources.
+-- Query #4: Provider Workload
+-- Clinical Context: Providers and scheduling staff need visibility into upcoming appointments in order to prepare charts, rooms, and staffing resources.
 -- Tables Used: provider, provider_availability, appointment, patient, facility
 -- Complexity Features: INNER JOINs, date filtering, ordering output
 
@@ -259,8 +259,8 @@ ORDER BY
 
 
 
--- Query #4: Insurance Coverage Summary
--- Clinical/Financial/Operational Context: Administrative and revenue-cycle teams need payer-level summaries showing how many patients are covered by each insurer and the average copay burden associated with that insurer.
+-- Query #5: Insurance Coverage Summary
+-- Financial Context: Administrative and revenue-cycle teams need payer-level summaries showing how many patients are covered by each insurer and the average copay burden associated with that insurer.
 -- Tables Used: insurance
 -- Complexity Features: GROUP BY, DISTINCT counting, aggregates, ordering
 
@@ -284,12 +284,41 @@ ORDER BY covered_patient_count DESC, insurance_company;
 
 
 
+-- Query #6: Insurance Claim Summary
+-- Financial Context: List all submitted insurance claims with patient name, insurance policy, and total number of submitted claims and charges, ordered by patient.
+-- Tables Used: insurance, insurance_claims, patient
+-- Complexity Features: GROUP BY, DISTINCT counting, aggregates, ordering
+
+SELECT
+    pat.mrn,
+    pat.first_name AS patient_first_name,
+    pat.last_name AS patient_last_name,
+
+    i.insurance_company,
+    i.policy_no,
+    i.group_no,
+
+    COUNT(DISTINCT cl.claim_id) AS num_submitted_claims,
+    SUM(cl.charge_amount) AS total_charges_amount,
+    SUM(cl.patient_responsibility) AS total_responsibility_amount
+
+FROM patient pat
+JOIN insurance i
+    ON pat.MRN = i.MRN
+   AND CURRENT_TIMESTAMP BETWEEN i.effective_date AND i.termination_date
+JOIN insurance_claim cl
+    ON pat.MRN = cl.MRN
+WHERE cl.insurance_claim_status = 'submitted'
+GROUP BY pat.mrn, pat.first_name, pat.last_name, i.insurance_company, i.policy_no, i.group_no
+ORDER BY pat.last_name, pat.first_name;
+
+-- Expected Output: Table of patients with active insurance coverage and submitted claims, showing patient name, insurance details, and total number of claims and charges, ordered by patient.
+-- Columns: insurance_company | covered_patient_count | avg_copay_amount | min_copay_amount | max_copay_amount
+-- Sample Results:
 
 
-
-
--- Query #5: Prescription Costs
--- Clinical/Financial/Operational Context: List all active prescriptions with patient name, medication, and insurance policy, ordered by patient.
+-- Query #7: Prescription Costs
+-- Financial Context: List all active prescriptions with patient name, medication, and insurance policy, ordered by patient.
 -- Tables Used: prescription, patient, medication, insurance
 -- Complexity Features: INNER JOIN, LEFT JOIN, WHERE filtering, ordering output
 
@@ -341,8 +370,8 @@ ORDER BY
 
 
 
--- Query #6: Provider Productivity
--- Clinical/Financial/Operational Context: Show appointment counts, no-show rates, and average patients per day by provider.
+-- Query #8: Provider Productivity
+-- Operational Context: Show appointment counts, no-show rates, and average patients per day by provider.
 -- Tables Used: appointment, provider_availability, provider
 -- Complexity Features: INNER JOINs, GROUP BY, aggregates, conditional counting, handling division by zero
 
@@ -385,8 +414,8 @@ ORDER BY p.last_name, p.first_name;
 
 
 
--- Query #7: Controlled Substances
--- Clinical/Financial/Operational Context: Report all Schedule II controlled substance prescriptions by provider, required for DEA reporting.
+-- Query #9: Controlled Substances
+-- Operational Context: Report all Schedule II controlled substance prescriptions by provider, required for DEA reporting.
 -- Tables Used: prescription, provider, patient, medication, dea_no
 -- Complexity Features: INNER JOINs, WHERE filtering, ordering output
 
@@ -438,8 +467,8 @@ ORDER BY p.provider_id, pr.date_prescribed DESC;
 
 
 
--- Query #8: Appointment Status Breakdown
--- Clinical/Financial/Operational Context: Show counts of appointments by status (completed, no-show, cancelled) broken down by facility.
+-- Query #10: Appointment Status Breakdown
+-- Operational Context: Show counts of appointments by status (completed, no-show, cancelled) broken down by facility.
 -- Tables Used: facility, provider_availability, appointment
 -- Complexity Features: INNER JOINs, GROUP BY, aggregates, conditional counting, handling division by zero
 
@@ -479,8 +508,8 @@ ORDER BY total_appointments DESC;
 
 
 
--- Query #9: Upcoming Appointments Without Active Insurance
--- Clinical/Financial/Operational Context: Front-desk and care coordination teams need to identify patients with upcoming appointments who do not currently have active insurance coverage on file, so coverage can be verified before the visit.
+-- Query #11: Upcoming Appointments Without Active Insurance
+-- Operational Context: Front-desk and care coordination teams need to identify patients with upcoming appointments who do not currently have active insurance coverage on file, so coverage can be verified before the visit.
 -- Tables Used: appointment, patient, provider_availability, facility, insurance
 -- Complexity Features: INNER JOINs, LEFT JOIN, date filtering, NULL filtering, ordering
 
@@ -519,8 +548,8 @@ ORDER BY pa.slot_date, pa.start_time, p.last_name, p.first_name;
 
 
 
--- Query #10: Open Provider Capacity by Facility
--- Clinical/Financial/Operational Context: Scheduling and operations teams need visibility into unbooked provider slots in the next 30 days in order to improve access, reduce wait times, and balance provider capacity across facilities.
+-- Query #12: Open Provider Capacity by Facility
+-- Operational Context: Scheduling and operations teams need visibility into unbooked provider slots in the next 30 days in order to improve access, reduce wait times, and balance provider capacity across facilities.
 -- Tables Used: provider_availability, appointment, provider, facility
 -- Complexity Features: INNER JOINs, LEFT JOIN, aggregates, GROUP BY, date filtering, ordering
 
@@ -563,8 +592,8 @@ ORDER BY open_slots DESC, f.facility_name, p.last_name, p.first_name;
 
 
 
--- Query #11: Abnormal Lab Results Follow-Up
--- Clinical/Financial/Operational Context: Abnormal lab results require timely provider review and possible patient follow-up. This query highlights patients with abnormal test results, the ordering provider, and the facility involved.
+-- Query #13: Abnormal Lab Results Follow-Up
+-- Operational Context: Abnormal lab results require timely provider review and possible patient follow-up. This query highlights patients with abnormal test results, the ordering provider, and the facility involved.
 -- Tables Used: lab_test, lab_order, patient, provider, facility
 -- Complexity Features: INNER JOINs, WHERE filtering, ordering output
 
@@ -606,3 +635,87 @@ ORDER BY lo.date_ordered DESC, p.last_name, p.first_name, lt.test_type;
 -- 200 | 88 | 1000000102 | Tessa  | Scott  | CBC          | 11.52 | 12.0 | 17.5 | true | NULL                              | 2026-04-03 17:15:00+00 | 11 | Hannah    | Osei    | 6 | Capitol Primary Care Clinic
 -- 176 | 75 | 1000000066 | Lucas  | White  | Lipid panel  | -0.3  | 0    | 149  | true | Critical value called to provider | 2026-03-25 17:45:00+00 | 5  | Sophia    | Patel   | 6 | Capitol Primary Care Clinic
 -- 173 | 74 | 1000000087 | Tara   | Parker | CBC          | 123.9 | 150  | 450  | true | NULL                              | 2026-03-20 18:00:00+00 | 23 | Ella      | Howard  | 5 | Memorial General Hospital
+
+
+
+
+-- Query #14: Lab Status Breakdown
+-- Operational Context: Show counts of labs orders by priority (routine, urgent, stat) broken down by facility which rates of completion.
+-- Tables Used: facility, lab_order
+-- Complexity Features: INNER JOINs, GROUP BY, aggregates, conditional counting, handling division by zero
+
+SELECT
+    f.facility_id,
+    f.facility_name,
+
+    COUNT(lo.order_id) AS total_lab_orders,
+
+    SUM(CASE WHEN lo.lab_priority = 'routine' THEN 1 ELSE 0 END) AS routine_count,
+    SUM(CASE WHEN lo.lab_priority = 'urgent' THEN 1 ELSE 0 END) AS urgent_count,
+    SUM(CASE WHEN lo.lab_priority = 'stat' THEN 1 ELSE 0 END) AS stat_count,
+
+    ROUND(
+        100.0 * SUM(CASE WHEN lo.lab_priority = 'routine' AND lo.is_completed = TRUE THEN 1 ELSE 0 END)
+        / NULLIF(COUNT(CASE WHEN lo.lab_priority = 'routine' THEN 1 ELSE 0 END), 0),
+        2
+    ) AS routine_percent_completed, 
+    ROUND(
+        100.0 * SUM(CASE WHEN lo.lab_priority = 'urgent' AND lo.is_completed = TRUE THEN 1 ELSE 0 END)
+        / NULLIF(COUNT(CASE WHEN lo.lab_priority = 'urgent' THEN 1 ELSE 0 END), 0),
+        2
+    ) AS urgent_percent_completed,
+    ROUND(
+        100.0 * SUM(CASE WHEN lo.lab_priority = 'stat' AND lo.is_completed = TRUE THEN 1 ELSE 0 END)
+        / NULLIF(COUNT(CASE WHEN lo.lab_priority = 'stat' THEN 1 ELSE 0 END), 0),
+        2
+    ) AS stat_percent_completed
+
+FROM lab_order lo
+JOIN facility f
+    ON lo.facility_id = f.facility_id
+
+GROUP BY f.facility_id, f.facility_name
+ORDER BY f.facility_id, f.facility_name DESC;
+
+-- Expected Output: table of facilities with lab order counts by priority, ordered by total lab orders.
+-- Columns: 
+
+-- Sample Results:
+
+
+
+-- Query #15: Prescription Refills
+-- Operational Context: Shows all prescriptions that have been refilled in the past week.
+-- Tables Used: prescription, patient, provider, medication
+-- Complexity Features: INNER JOINs, GROUP BY, aggregates, conditional counting, handling division by zero
+
+SELECT
+    pat.MRN,
+    pat.first_name AS patient_first_name,
+    pat.last_name AS patient_last_name, 
+    
+    pr.prescription_id,
+    pr.max_num_refills,
+    pr.date_prescribed,
+    pr.expiration_date,
+
+    m.medication_name,
+
+    COUNT(ref.prescription_id) as num_refills
+FROM prescription pr
+JOIN patient pat
+    ON pr.MRN = pat.MRN
+JOIN medication m
+    ON pr.medication_id = m.medication_id
+LEFT JOIN refill_history ref
+    ON pr.prescription_id = ref.prescription_id
+WHERE pr.max_num_refills > 0
+  AND pr.date_prescribed >= CURRENT_DATE - INTERVAL '7 days'
+GROUP BY pr.prescription_id, pr.date_prescribed, pat.MRN, pat.first_name, pat.last_name, m.medication_name
+ORDER BY pr.date_prescribed DESC, pat.last_name, pat.first_name, m.medication_name;
+
+
+-- Expected Output: table of facilities with lab order counts by priority, ordered by total lab orders.
+-- Columns: 
+
+-- Sample Results:
