@@ -1,16 +1,16 @@
-from models.prescription import Prescription
-from repositories.base_repository import BaseRepository
+from src.models.prescription import Prescription
+from src.repositories.base_repository import BaseRepository
 
 
 class PrescriptionRepository(BaseRepository):
 
-    # For Third CLI menu: "System dashboard" - count total active prescriptions
-    def count_active_prescriptions(self):
+    # For Third CLI menu: "System dashboard" - count prescriptions prescribed in the current month
+    def count_monthly_prescriptions(self):
         row = self._fetch_one(
             """
             SELECT COUNT(*) AS count
             FROM prescription
-            WHERE prescription_status = 'active'
+            WHERE DATE_TRUNC('month', date_prescribed) = DATE_TRUNC('month', CURRENT_DATE)
             """,
             ()
         )

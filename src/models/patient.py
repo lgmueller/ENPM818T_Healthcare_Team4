@@ -5,9 +5,9 @@ from datetime import date
 class Patient:
     mrn: str
     first_name: str
-    middle_name: str | None = None
     last_name: str
     dob: date
+    middle_name: str | None = None
     gender: str | None = None
     primary_provider_id: int | None = None
     has_insurance: bool = False

@@ -776,7 +776,7 @@ CREATE TABLE insurance (
     effective_date TIMESTAMPTZ NOT NULL, 
     termination_date TIMESTAMPTZ NOT NULL, 
 
-    CONSTRAINT fk_lab_test_MRN
+    CONSTRAINT fk_insurance_MRN
         FOREIGN KEY (MRN)
         REFERENCES patient(MRN)
         ON DELETE CASCADE,

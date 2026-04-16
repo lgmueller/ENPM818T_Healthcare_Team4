@@ -1,5 +1,5 @@
-from models.insurance import Insurance
-from repositories.base_repository import BaseRepository
+from src.models.insurance import Insurance
+from src.repositories.base_repository import BaseRepository
 
 
 class InsuranceRepository(BaseRepository):
@@ -10,7 +10,7 @@ class InsuranceRepository(BaseRepository):
             SELECT 
                 insurance_id, mrn, policy_no, insurance_company, 
                 coverage, group_no, copay_amount, effective_date, 
-                expiration_date 
+                termination_date 
             FROM insurance
             WHERE insurance_id = %s
             """,
@@ -24,7 +24,7 @@ class InsuranceRepository(BaseRepository):
             SELECT 
                 insurance_id, mrn, policy_no, insurance_company, 
                 coverage, group_no, copay_amount, effective_date, 
-                expiration_date 
+                termination_date 
             FROM insurance
             ORDER BY insurance_id
             LIMIT %s OFFSET %s
@@ -32,3 +32,17 @@ class InsuranceRepository(BaseRepository):
             (limit, offset)
         )
         return [Insurance.from_row(r) for r in rows]
+    
+    def find_by_mrn(self, mrn):
+        row = self._fetch_one(
+            """
+            SELECT 
+                insurance_id, mrn, policy_no, insurance_company, 
+                coverage, group_no, copay_amount, effective_date, 
+                termination_date 
+            FROM insurance
+            WHERE mrn = %s
+            """,
+            (mrn,)
+        )
+        return Insurance.from_row(row) if row else None

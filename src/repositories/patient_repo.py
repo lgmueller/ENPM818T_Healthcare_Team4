@@ -1,4 +1,4 @@
-from models.patient import Patient
+from src.models.patient import Patient
 from src.repositories.base_repository import BaseRepository
 
 

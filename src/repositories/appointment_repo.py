@@ -1,5 +1,5 @@
-from models.appointment import Appointment
-from repositories.base_repository import BaseRepository
+from src.models.appointment import Appointment
+from src.repositories.base_repository import BaseRepository
 
 
 class AppointmentRepository(BaseRepository):
@@ -18,14 +18,14 @@ class AppointmentRepository(BaseRepository):
         )
         return [Appointment.from_row(r) for r in rows]
     
-    # For Third CLI menu: "System dashboard" - count total appointments
-    def count_upcoming_appointments(self):
+    # For Third CLI menu: "System dashboard" - count total appointments for today
+    def count_todays_appointments(self):
         row = self._fetch_one(
             """
             SELECT COUNT(*) AS count
             FROM appointment a
             JOIN provider_availability pa ON a.slot_id = pa.slot_id
-            WHERE pa.slot_date >= CURRENT_DATE
+            WHERE pa.slot_date = CURRENT_DATE
             """,
             ()
         )
