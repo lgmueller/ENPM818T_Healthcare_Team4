@@ -678,7 +678,7 @@ GROUP BY f.facility_id, f.facility_name
 ORDER BY f.facility_id, f.facility_name DESC;
 
 -- Expected Output: table of facilities with lab order counts by priority, ordered by total lab orders.
--- Columns: 
+-- Columns: facility_id | facility_name | total_lab_orders | routine_count | urgent_count | stat_count | routine_percent_completed | urgent_percent_completed | stat_percent_completed
 
 -- Sample Results:
 
@@ -701,7 +701,7 @@ SELECT
 
     m.medication_name,
 
-    COUNT(ref.prescription_id) as num_refills
+    COUNT(ref.prescription_id) as num_refilled
 FROM prescription pr
 JOIN patient pat
     ON pr.MRN = pat.MRN
@@ -715,7 +715,6 @@ GROUP BY pr.prescription_id, pr.date_prescribed, pat.MRN, pat.first_name, pat.la
 ORDER BY pr.date_prescribed DESC, pat.last_name, pat.first_name, m.medication_name;
 
 
--- Expected Output: table of facilities with lab order counts by priority, ordered by total lab orders.
--- Columns: 
-
+-- Expected Output: table of prescriptions that have been refilled in the past week, showing patient name, prescription details, medication name, and number of refills.
+-- Columns: MRN | patient_first_name | patient_last_name | prescription_id | max_num_refills | date_prescribed | expiration_date | medication_name | num_refilled
 -- Sample Results:
