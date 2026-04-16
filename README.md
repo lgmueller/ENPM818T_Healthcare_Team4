@@ -180,12 +180,12 @@ ENPM818T_Healthcare_Team4/
 │    ├── repositories/       # SQL queries and CRUD operations
 │    ├── services/           # Business logic layer
 │    ├── cli/                # CLI interface
-│    ├── main.py             # Starting point of the application
+│    └── main.py             # Starting point of the application
 │
 ├── postgresql/
 │    ├── schema.sql          # Database schema
 │    ├── data.sql            # Sample data
-│    ├── queries.sql         # Sample queries
+│    └── queries.sql         # Sample queries
 │
 ├── tests/
 ├── .env.example              # Environment variables store
