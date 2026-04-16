@@ -6,9 +6,9 @@ Translates database exceptions into domain errors (ValueError) for the CLI.
 
 from psycopg2 import OperationalError, DatabaseError, InterfaceError
 from dataclasses import asdict, is_dataclass
-from src.repositories.patient_repo import PatientRepository
-from src.repositories.insurance_repo import InsuranceRepository
-from src.repositories.prescription_repo import PrescriptionRepository
+from repositories.patient_repo import PatientRepository
+from repositories.insurance_repo import InsuranceRepository
+from repositories.prescription_repo import PrescriptionRepository
 
 class PatientService:
 

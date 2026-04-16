@@ -1,5 +1,5 @@
-from src.models.medication import Medication
-from src.repositories.base_repository import BaseRepository
+from models.medication import Medication
+from repositories.base_repository import BaseRepository
 
 
 class MedicationRepository(BaseRepository):

@@ -96,15 +96,44 @@ psql -U postgres -d healthcare_db -f postgresql/queries.sql
 
 ### 4. Configure Environment Variables
 
-Create a `.env` file in the root directory:
+PostgreSQL authentication depends on your local setup.
+
+#### Option 1: Using Default System User (Recommended for Mac/Linux)
+
+If your PostgreSQL installation uses your system username (common on Mac), you can omit `DB_USER` and `DB_PASSWORD` from the `.env` file:
 
 ```env
 DB_NAME=healthcare_db
-DB_USER=<YOUR_DB_RULE>
-DB_PASSWORD=<YOUR_DB_PWD>
 DB_HOST=localhost
 DB_PORT=5432
 ```
+
+In this case, the application will connect using your OS user.
+
+---
+
+#### Option 2: Using Explicit Credentials
+
+If your PostgreSQL setup requires a username and password, specify them:
+
+```env
+DB_NAME=healthcare_db
+DB_USER=<your_username_here>
+DB_PASSWORD=<your_password_here>
+DB_HOST=localhost
+DB_PORT=5432
+```
+
+---
+
+#### ⚠️ Important
+
+* Do NOT leave `DB_USER` or `DB_PASSWORD` empty (e.g., `DB_USER=`)
+* Either provide valid values or omit them entirely
+* Incorrect configuration may result in errors such as:
+
+  * `role "postgres" does not exist`
+  * `role "password=" does not exist`
 
 ---
 

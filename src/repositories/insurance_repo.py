@@ -1,5 +1,5 @@
-from src.models.insurance import Insurance
-from src.repositories.base_repository import BaseRepository
+from models.insurance import Insurance
+from repositories.base_repository import BaseRepository
 
 
 class InsuranceRepository(BaseRepository):
