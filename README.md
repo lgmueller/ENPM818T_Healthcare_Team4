@@ -188,6 +188,10 @@ This layered architecture ensures separation of concerns, maintainability, and s
 - Access a dashboard with aggregated system metrics  
 - Lookup provider details using NPI
 - Supports modular repository-service architecture for scalability
+- Core Tables Implemented
+  - Patient (full CRUD)
+  - Appointment (full CRUD)
+  - Prescription (full CRUD)
 
 ---
 
@@ -295,7 +299,38 @@ This command generates an HTML coverage report in the `htmlcov/` directory.
 
 ## 📸 Example Run Screenshots
 
-Screenshots demonstrating CLI interactions and system functionality are available in the [screenshots folder](./screenshots).
+* Screenshots demonstrating CLI interactions and system functionality are available in the [screenshots folder](./screenshots).
+
+* Query Outputs are mentioned in the [queries.sql file](/postgresql/queries.sql). Here is one of the sample query output:
+
+  Query #5: Insurance Coverage Summary
+
+  Financial Context: Administrative and revenue-cycle teams need payer-level summaries showing how many patients are covered by each insurer and the average copay burden associated with that insurer.
+
+  Tables Used: `INSURANCE`
+
+  Complexity Features: `GROUP BY`, `DISTINCT` counting, aggregates, and ordering
+  ```sql
+  SELECT
+      insurance_company,
+      COUNT(DISTINCT MRN) AS covered_patient_count,
+      ROUND(AVG(copay_amount), 2) AS avg_copay_amount,
+      MIN(copay_amount) AS min_copay_amount,
+      MAX(copay_amount) AS max_copay_amount
+  FROM insurance
+  WHERE CURRENT_TIMESTAMP BETWEEN effective_date AND termination_date
+  GROUP BY insurance_company
+  ORDER BY covered_patient_count DESC, insurance_company;
+  ```
+
+  Expected Output: One row per active insurance company, showing the number of distinct covered patients and the average, minimum, and maximum copay amounts.
+
+  Sample Results:
+  | insurance_company | covered_patient_count | avg_copay_amount | min_copay_amount | max_copay_amount |
+  | -------- | -------- | -------- | -------- | -------- |
+  | Maryland Medicaid              | 18 | 25.00 | 0.00  | 50.00 |
+  | BlueCross BlueShield of Maryland | 17 | 23.24 | 0.00  | 50.00 |
+  | Kaiser Permanente              | 13 | 28.46 | 10.00 | 50.00 |
 
 ---
 
