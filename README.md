@@ -2,6 +2,10 @@
 
 This project implements a comprehensive healthcare database system using PostgreSQL and Python. It translates a conceptual healthcare design into a fully functional database with realistic synthetic data, supports clinical and administrative queries, and provides a menu-driven command-line interface for interaction.
 
+![Python](https://img.shields.io/badge/Python-3.10+-blue)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-blue)
+![CLI](https://img.shields.io/badge/Interface-CLI-green)
+
 ---
 
 ## 📑 Table of Contents
@@ -15,9 +19,11 @@ This project implements a comprehensive healthcare database system using Postgre
   * [Configure Environment Variables](#4-configure-environment-variables)
   * [Install Dependencies](#5-install-dependencies)
 * [Design Overview](#-design-overview)
+* [Features](#-features)
 * [Project Structure](#️-project-structure)
 * [Running the Application](#️-running-the-application)
 * [Running Tests](#-running-unit-tests)
+* [Example Run Screenshots](./screenshots)
 * [Database Configuration Notes](#-database-design-highlights)
 * [Notes](#️-final-notes)
 * [Team Contributions](#-contributors)
@@ -171,6 +177,17 @@ pip install -r requirements.txt
 * **Repositories**: Handle SQL queries and database interactions
 * **Services**: Contain business logic and orchestrate repositories
 * **CLI**: User interface for interacting with the system
+
+This layered architecture ensures separation of concerns, maintainability, and scalability of the application.
+
+---
+
+## ✨ Features
+
+- Retrieve patient records by MRN  
+- View appointments for a specific provider  
+- Access a dashboard with aggregated system metrics  
+- Lookup provider details using NPI
 
 ---
 
