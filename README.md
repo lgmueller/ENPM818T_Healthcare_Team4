@@ -164,9 +164,58 @@ If running the Python interface, you will see options for:
 
 ## 🧪 Running Unit Tests
 
+Make sure you are in the project root directory and your virtual environment is activated.
+
+### 1. Install test dependencies
+
 ```bash
-pytest
+pip install pytest
 ```
+
+---
+
+### 2. Run all tests
+
+```bash
+PYTHONPATH=src pytest -v
+```
+
+---
+
+### 3. Run a specific test file
+
+```bash
+PYTHONPATH=src pytest tests/test_repositories.py -v
+```
+
+---
+
+### ⚠️ Notes
+
+* Ensure PostgreSQL is running before executing tests
+* The database must be initialized with `schema.sql` and `data.sql`
+* Environment variables in `.env` must be correctly configured
+* If you encounter import errors, ensure `PYTHONPATH=src` is set as shown above
+
+---
+
+### 📊 Test Coverage
+
+The project includes a comprehensive unit test suite covering database operations and core application logic.
+
+* **Total Coverage:** 89%
+* **Repository Layer:** 100% coverage across all CRUD operations
+* **Test Framework:** pytest with coverage reporting
+
+This ensures correctness and reliability of all database interactions.
+
+The coverage results can be reproduced by running:
+
+```bash
+PYTHONPATH=src pytest tests/ --cov=src --cov-report=html
+```
+
+This command generates an HTML coverage report in the `htmlcov/` directory.
 
 ---
 

@@ -4,4 +4,9 @@ __pycache__/
 *.pyo
 .venv/
 venv/
-.vscode
+.vscode/
+# Ignoring Coverage related files
+.coverage
+htmlcov/
+# Ignoring Mac specific files
+.DS_Store

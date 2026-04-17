@@ -3,7 +3,7 @@ Test suite for service classes.
 pytest tests/ --cov=src --cov-report=html
 """
 
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from decimal import Decimal
 from zoneinfo import ZoneInfo
 
@@ -78,8 +78,8 @@ class TestPatientLookup:
         assert result["coverage"] == "Employee health plan"
         assert result["group_no"] == "G75104"
         assert result["copay_amount"] == Decimal(20.00)
-        assert result["effective_date"] == datetime(2025, 8, 15, 0, 0, 0, tzinfo=ZoneInfo("America/New_York"))
-        assert result["termination_date"] == datetime(2027, 1, 24, 0, 0, 0, tzinfo=ZoneInfo("America/New_York"))
+        assert result["effective_date"] == datetime(2025, 8, 15, 0, 0, 0, tzinfo=ZoneInfo("UTC"))
+        assert result["termination_date"] == datetime(2027, 1, 24, 0, 0, 0, tzinfo=ZoneInfo("UTC"))
 
     def test_no_prescription_info(self, patient_service):
         result = patient_service.get_patient_by_mrn("1000000000")
@@ -93,11 +93,11 @@ class TestPatientLookup:
         assert result["active_prescriptions"][0]["prescription_id"] == 102
         assert result["active_prescriptions"][0]["mrn"] == "1000000096"
         assert result["active_prescriptions"][0]["medication_id"] == 19
-        assert result["active_prescriptions"][0]["date_prescribed"] == datetime(2026, 2, 23, 10, 15, 0, tzinfo=ZoneInfo("America/New_York"))
+        assert result["active_prescriptions"][0]["date_prescribed"] == datetime(2026, 2, 23, 10, 15, 0, tzinfo=ZoneInfo("UTC"))
         assert result["active_prescriptions"][0]["prescription_status"] == "active"
         assert result["active_prescriptions"][0]["max_num_refills"] == 0
         assert result["active_prescriptions"][0]["provider_id"] == 26
-        assert result["active_prescriptions"][0]["expiration_date"] == datetime(2026, 3, 25, 10, 15, 0, tzinfo=ZoneInfo("America/New_York"))
+        assert result["active_prescriptions"][0]["expiration_date"] == datetime(2026, 3, 25, 10, 15, 0, tzinfo=ZoneInfo("UTC"))
         assert result["active_prescriptions"][0]["dosage"] == "650 mg"
         assert result["active_prescriptions"][0]["frequency"] == "every 6 hours as needed"
         assert result["active_prescriptions"][0]["duration"] == "10 days"

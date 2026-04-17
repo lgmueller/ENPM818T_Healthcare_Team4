@@ -14,8 +14,8 @@
 | Task     | Team Member      | Time Spent (hrs) | 
 | ------------- | ------------- |-- | 
 | configuration (database.py) | Rozan | 0.5 | 
-| models (patient.py, ..., etc) | -- |-- | 
-| repositories (CRUD operations) | -- |-- | 
+| models (patient.py, ..., etc) | Nishtha | 4 | 
+| repositories (CRUD operations) | Nishtha | 6 | 
 | services (business logic) | Rozan | 4 | 
 | main.py | Rozan | 2 | 
 | testing | Rozan | 4 |
@@ -23,7 +23,7 @@
 ## Documentation 
 | Task     | Team Member      | Time Spent (hrs) | 
 | ------------- | ------------- |-- | 
-| README.md | Nishtha | 3hr | 
+| README.md | Nishtha | 4hr | 
 | README.md | Simran | 1hr |  
 | team_contributions.md | Lily | 1hr | 
 
