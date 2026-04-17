@@ -224,22 +224,24 @@ This command generates an HTML coverage report in the `htmlcov/` directory.
 ```
 ENPM818T_Healthcare_Team4/
 ├──src/
-│    ├── config/             # Database connection details
-│    ├── models/             # Dataclass for entities
-│    ├── repositories/       # SQL queries and CRUD operations
-│    ├── services/           # Business logic layer
-│    ├── cli/                # CLI interface
-│    └── main.py             # Starting point of the application
+│    ├── models/                    # Data classes for entities
+│    ├── config/                    # Database connection details
+│    ├── repositories/              # SQL queries and CRUD operations
+│    ├── services/                  # Business logic layer
+│    ├── cli/                       # CLI interface
+│    └── main.py                    # Starting point of the application
 │
 ├── postgresql/
-│    ├── schema.sql          # Database schema
-│    ├── data.sql            # Sample data
-│    └── queries.sql         # Sample queries
+│    ├── schema.sql                 # Database schema
+│    ├── data.sql                   # Sample data
+│    └── queries.sql                # Sample queries
 │
 ├── tests/
-├── .env.example              # Environment variables store
+│    ├── test_services.py           # Testing scripts for services
+│    └── test_repositories.py       # Testing scripts for Repositories
+├── .env.example                    # Example Environment variables store
 ├── requirements.txt
-├── team_contributions.md   # Contributions made by each team member
+├── team_contributions.md           # Contributions made by each team member
 └── README.md
 ```
 
@@ -323,9 +325,9 @@ Each query includes:
 
 ## 👩‍💻 Contributors
 
-* Lily
-* Nishtha
-* Rozan
+* Lillian Mueller (UID: )
+* Nishtha Gupta (UID: 122031197)
+* Rozan Sonnadara (UID: 122359826)
 * Simran Mohapatra (UID: 121957467)
 
 ---
