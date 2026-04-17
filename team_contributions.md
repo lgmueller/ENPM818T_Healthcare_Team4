@@ -19,6 +19,7 @@
 | services (business logic) | Rozan | 4 | 
 | main.py | Rozan | 2 | 
 | testing | Rozan | 4 |
+| testing | Nishtha | 2 |
 
 ## Documentation 
 | Task     | Team Member      | Time Spent (hrs) | 

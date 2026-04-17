@@ -200,6 +200,33 @@ class TestProviderRepository:
         result = provider_repo.find_by_npi("9999999999")
         assert result is None
 
+    def test_find_by_id_returns_entity(self, provider_repo):
+        provider = provider_repo.find_by_id(1)
+        assert provider is not None
+        assert provider.provider_id == 1
+        assert provider.first_name == 'Olivia'
+        assert provider.last_name == 'Bennett'
+        assert provider.provider_type == 'Physician'
+        assert provider.npi == '8000000001'
+        assert provider.can_prescribe == True
+
+    def test_find_by_id_returns_none_for_missing(self, provider_repo):
+        provider = provider_repo.find_by_id(-1)  # unlikely ID
+        assert provider is None
+
+    def test_provider_find_all(self, provider_repo):
+        providers = provider_repo.find_all()
+        assert isinstance(providers, list)
+        assert len(providers) > 0
+        # check structure of first item
+        provider = providers[0]
+        assert hasattr(provider, "provider_id")
+        assert hasattr(provider, "first_name")
+        assert hasattr(provider, "last_name")
+        assert hasattr(provider, "provider_type")
+        assert hasattr(provider, "npi")
+        assert hasattr(provider, "can_prescribe")
+
 
 # ----------------------------------------------------------------
 # PrescriptionRepository Tests

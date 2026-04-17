@@ -3,6 +3,7 @@ Test suite for service classes.
 pytest tests/ --cov=src --cov-report=html
 """
 
+from psycopg import OperationalError, InterfaceError
 from datetime import date, datetime, timezone
 from decimal import Decimal
 from zoneinfo import ZoneInfo
@@ -122,6 +123,31 @@ class TestSystemDashboard:
         assert "prescriptions_this_month" in metrics
         assert "appointments_today" in metrics
         assert metrics["total_patients"] == 110
+
+    def test_get_count_success(self, dashboard_service):
+        result = dashboard_service._get_count(lambda: 5, "patients")
+        assert result == 5
+
+    def test_get_count_operational_error(self, dashboard_service):
+        def raise_error():
+            raise OperationalError("DB down")
+
+        with pytest.raises(ValueError, match="Could not connect to the database"):
+            dashboard_service._get_count(raise_error, "patients")
+
+    def test_get_count_interface_error(self, dashboard_service):
+        def raise_error():
+            raise InterfaceError("Connection lost")
+
+        with pytest.raises(ValueError, match="Could not connect to the database"):
+            dashboard_service._get_count(raise_error, "patients")
+
+    def test_get_count_generic_exception(self, dashboard_service):
+        def raise_error():
+            raise Exception("Unexpected")
+
+        with pytest.raises(ValueError, match="An error occurred while retrieving patients count"):
+            dashboard_service._get_count(raise_error, "patients")
 
 # ----------------------------------------------------------------
 # Provider appointments and lookup by npi (menu options 2 and 4)

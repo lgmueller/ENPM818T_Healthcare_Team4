@@ -277,7 +277,7 @@ PYTHONPATH=src pytest tests/test_repositories.py -v
 
 The project includes a comprehensive unit test suite covering database operations and core application logic.
 
-* **Total Coverage:** 89%
+* **Total Coverage:** 90%
 * **Repository Layer:** 100% coverage across all CRUD operations
 * **Test Framework:** pytest with coverage reporting
 
