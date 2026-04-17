@@ -4,6 +4,26 @@ This project implements a comprehensive healthcare database system using Postgre
 
 ---
 
+## 📑 Table of Contents
+
+* [Project Scope](#-project-scope)
+* [Learning Objectives](#-learning-objectives)
+* [Prerequisites](#-prerequisites)
+* [Setup Instructions](#️-setup-instructions)
+  * [Create PostgreSQL Database](#2-create-postgresql-database)
+  * [Load Schema and Data](#3-load-schema-and-data)
+  * [Configure Environment Variables](#4-configure-environment-variables)
+  * [Install Dependencies](#5-install-dependencies)
+* [Design Overview](#-design-overview)
+* [Project Structure](#️-project-structure)
+* [Running the Application](#️-running-the-application)
+* [Running Tests](#-running-unit-tests)
+* [Database Configuration Notes](#-database-design-highlights)
+* [Notes](#️-final-notes)
+* [Team Contributions](#-contributors)
+
+---
+
 ## 🎯 Project Scope
 
 * Implement GP1 healthcare database design in PostgreSQL
@@ -145,6 +165,43 @@ pip install -r requirements.txt
 
 ---
 
+## 🧠 Design Overview
+
+* **Models**: Represent database tables using Python dataclasses
+* **Repositories**: Handle SQL queries and database interactions
+* **Services**: Contain business logic and orchestrate repositories
+* **CLI**: User interface for interacting with the system
+
+---
+
+## 🏗️ Project Structure
+
+```
+ENPM818T_Healthcare_Team4/
+├──src/
+│    ├── models/                    # Data classes for entities
+│    ├── config/                    # Database connection details
+│    ├── repositories/              # SQL queries and CRUD operations
+│    ├── services/                  # Business logic layer
+│    ├── cli/                       # CLI interface
+│    └── main.py                    # Starting point of the application
+│
+├── postgresql/
+│    ├── schema.sql                 # Database schema
+│    ├── data.sql                   # Sample data
+│    └── queries.sql                # Sample queries
+│
+├── tests/
+│    ├── test_services.py           # Testing scripts for services
+│    └── test_repositories.py       # Testing scripts for Repositories
+├── .env.example                    # Example Environment variables store
+├── requirements.txt
+├── team_contributions.md           # Contributions made by each team member
+└── README.md
+```
+
+---
+
 ## ▶️ Running the Application
 
 Run the CLI interface:
@@ -219,43 +276,6 @@ This command generates an HTML coverage report in the `htmlcov/` directory.
 
 ---
 
-## 🏗️ Project Structure
-
-```
-ENPM818T_Healthcare_Team4/
-├──src/
-│    ├── models/                    # Data classes for entities
-│    ├── config/                    # Database connection details
-│    ├── repositories/              # SQL queries and CRUD operations
-│    ├── services/                  # Business logic layer
-│    ├── cli/                       # CLI interface
-│    └── main.py                    # Starting point of the application
-│
-├── postgresql/
-│    ├── schema.sql                 # Database schema
-│    ├── data.sql                   # Sample data
-│    └── queries.sql                # Sample queries
-│
-├── tests/
-│    ├── test_services.py           # Testing scripts for services
-│    └── test_repositories.py       # Testing scripts for Repositories
-├── .env.example                    # Example Environment variables store
-├── requirements.txt
-├── team_contributions.md           # Contributions made by each team member
-└── README.md
-```
-
----
-
-## 🧠 Design Overview
-
-* **Models**: Represent database tables using Python dataclasses
-* **Repositories**: Handle SQL queries and database interactions
-* **Services**: Contain business logic and orchestrate repositories
-* **CLI**: User interface for interacting with the system
-
----
-
 ## 🏥 Database Design Highlights
 
 - Enforced healthcare identifiers:
@@ -315,11 +335,13 @@ Each query includes:
 
 ---
 
-## ⚠️ Notes
+## ⚠️ Final Notes
 
 * Ensure PostgreSQL is running before starting the application
-* Database credentials must match your `.env` configuration
-* The application uses connection pooling via psycopg
+* Do not include empty values for `DB_USER` or `DB_PASSWORD` in `.env`; omit them entirely if not used
+* Always connect to the correct database (`healthcare_db`) before running `schema.sql`
+* If connection errors occur (e.g., `role "None" does not exist`), verify environment variables and connection configuration
+* The application uses connection pooling via psycopg, so database settings must allow multiple connections
 
 ---
 
@@ -329,5 +351,3 @@ Each query includes:
 * Nishtha Gupta (UID: 122031197)
 * Rozan Sonnadara (UID: 122359826)
 * Simran Mohapatra (UID: 121957467)
-
----
