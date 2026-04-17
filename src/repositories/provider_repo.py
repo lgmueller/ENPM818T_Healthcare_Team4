@@ -1,5 +1,5 @@
-from models.provider import Provider
-from repositories.base_repository import BaseRepository
+from src.models.provider import Provider
+from src.repositories.base_repository import BaseRepository
 
 
 class ProviderRepository(BaseRepository):

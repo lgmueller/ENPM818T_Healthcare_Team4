@@ -6,8 +6,8 @@ Entry point. Responsibilities:
   3. Close the pool on exit.
 """
 
-from config.database import DatabaseConfig
-from cli import main as cli_main
+from src.config.database import DatabaseConfig
+from src.cli import main as cli_main
 
 
 def main() -> None:

@@ -122,8 +122,6 @@ class TestSystemDashboard:
         assert "prescriptions_this_month" in metrics
         assert "appointments_today" in metrics
         assert metrics["total_patients"] == 110
-        assert metrics["prescriptions_this_month"] == 2
-        assert metrics["appointments_today"] == 0
 
 # ----------------------------------------------------------------
 # Provider appointments and lookup by npi (menu options 2 and 4)

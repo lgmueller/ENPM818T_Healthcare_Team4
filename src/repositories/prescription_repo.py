@@ -1,5 +1,5 @@
-from models.prescription import Prescription
-from repositories.base_repository import BaseRepository
+from src.models.prescription import Prescription
+from src.repositories.base_repository import BaseRepository
 
 
 class PrescriptionRepository(BaseRepository):

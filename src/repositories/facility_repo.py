@@ -1,5 +1,5 @@
-from models.facility import Facility
-from repositories.base_repository import BaseRepository
+from src.models.facility import Facility
+from src.repositories.base_repository import BaseRepository
 
 
 class FacilityRepository(BaseRepository):
