@@ -23,7 +23,7 @@ This project implements a comprehensive healthcare database system using Postgre
 * [Project Structure](#️-project-structure)
 * [Running the Application](#️-running-the-application)
 * [Running Tests](#-running-unit-tests)
-* [Example Run Screenshots](#-example-run-screenshots)
+* [Example Run](#-example-run)
 * [Database Design Highlights](#-database-design-highlights)
 * [Final Notes](#️-final-notes)
 * [Contributors](#-contributors)
@@ -170,7 +170,66 @@ pip install -r requirements.txt
 
 ---
 
-## 🧠 Design Overview
+## 🏥 Database Design Highlights
+
+- Enforced healthcare identifiers:
+  - MRN (10-digit unique identifier)
+  - NPI (10-digit provider identifier)
+  - DEA numbers (2 letters + 7 digits for prescribing providers)
+
+- Appointment scheduling system:
+  - Provider availability stored separately
+  - One-to-one booking enforced via UNIQUE(slot_id)
+
+- Data integrity:
+  - CHECK constraints for SSN, phone numbers, ZIP codes
+  - Foreign key relationships across all major entities
+
+- Triggers:
+  - Automatic `updated_at` timestamp updates for key tables
+
+- Controlled substances:
+  - Identified via medication.schedule
+  - DEA linkage handled via provider DEA records
+  - Cross-table enforcement documented (PostgreSQL limitation)
+
+---
+
+## 🧪 Synthetic Data
+
+All data in this project is fully synthetic and generated to simulate realistic healthcare scenarios.
+
+- No real patient or provider data is used
+- MRNs, NPIs, DEA numbers follow valid formats
+- Data distributions mimic real-world usage:
+  - Appointment statuses (completed, scheduled, no-show)
+  - Insurance coverage patterns
+  - Prescription usage and controlled substances
+  - Lab results including abnormal values
+  
+⚠️ Note: SSNs are stored as 9-digit numeric strings to satisfy schema constraints.
+
+---
+
+## 📊 SQL Queries
+
+The project includes 15 SQL queries covering:
+
+- Clinical workflows (patient care coordination, medication safety)
+- Operational insights (provider workload, appointment breakdown)
+- Financial analysis (insurance coverage, prescription costs)
+
+Each query includes:
+- Clinical or business context
+- Tables used
+- Complexity features (joins, aggregates, filtering)
+- Sample outputs based on synthetic data
+
+⚠️ Note: Queries were adjusted to reflect the synthetic dataset.
+
+---
+
+## 🧠 Application Design Overview
 
 * **Models**: Represent database tables using Python dataclasses
 * **Repositories**: Handle SQL queries and database interactions
@@ -240,6 +299,7 @@ The CLI provides the following options:
 * Provider appointments
 * Dashboard analytics
 * Provider search by NPI
+* Exit the application
 
 ---
 
@@ -247,7 +307,7 @@ The CLI provides the following options:
 
 Make sure you are in the project root directory and your virtual environment is activated.
 
-### 1. Install test dependencies
+### 1. Install test dependencies (optional, already included in requirements.txt)
 
 ```bash
 pip install pytest
@@ -263,7 +323,7 @@ PYTHONPATH=src pytest -v
 
 ---
 
-### 3. Run a specific test file
+### 3. Run a specific test file (test_repositories.py or test_services.py)
 
 ```bash
 PYTHONPATH=src pytest tests/test_repositories.py -v
@@ -300,7 +360,7 @@ This command generates an HTML coverage report in the `htmlcov/` directory.
 
 ---
 
-## 📸 Example Run Screenshots
+## 📸 Example Run
 
 * Screenshots demonstrating CLI interactions and system functionality are available in the [screenshots folder](./screenshots).
 
@@ -334,65 +394,6 @@ This command generates an HTML coverage report in the `htmlcov/` directory.
   | Maryland Medicaid              | 18 | 25.00 | 0.00  | 50.00 |
   | BlueCross BlueShield of Maryland | 17 | 23.24 | 0.00  | 50.00 |
   | Kaiser Permanente              | 13 | 28.46 | 10.00 | 50.00 |
-
----
-
-## 🏥 Database Design Highlights
-
-- Enforced healthcare identifiers:
-  - MRN (10-digit unique identifier)
-  - NPI (10-digit provider identifier)
-  - DEA numbers (2 letters + 7 digits for prescribing providers)
-
-- Appointment scheduling system:
-  - Provider availability stored separately
-  - One-to-one booking enforced via UNIQUE(slot_id)
-
-- Data integrity:
-  - CHECK constraints for SSN, phone numbers, ZIP codes
-  - Foreign key relationships across all major entities
-
-- Triggers:
-  - Automatic `updated_at` timestamp updates for key tables
-
-- Controlled substances:
-  - Identified via medication.schedule
-  - DEA linkage handled via provider DEA records
-  - Cross-table enforcement documented (PostgreSQL limitation)
-
----
-
-## 🧪 Synthetic Data
-
-All data in this project is fully synthetic and generated to simulate realistic healthcare scenarios.
-
-- No real patient or provider data is used
-- MRNs, NPIs, DEA numbers follow valid formats
-- Data distributions mimic real-world usage:
-  - Appointment statuses (completed, scheduled, no-show)
-  - Insurance coverage patterns
-  - Prescription usage and controlled substances
-  - Lab results including abnormal values
-  
-⚠️ Note: SSNs are stored as 9-digit numeric strings to satisfy schema constraints.
-
----
-
-## 📊 SQL Queries
-
-The project includes 15 SQL queries covering:
-
-- Clinical workflows (patient care coordination, medication safety)
-- Operational insights (provider workload, appointment breakdown)
-- Financial analysis (insurance coverage, prescription costs)
-
-Each query includes:
-- Clinical or business context
-- Tables used
-- Complexity features (joins, aggregates, filtering)
-- Sample outputs based on synthetic data
-
-⚠️ Note: Queries were adjusted to reflect the synthetic dataset.
 
 ---
 
