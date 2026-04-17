@@ -23,10 +23,10 @@ This project implements a comprehensive healthcare database system using Postgre
 * [Project Structure](#️-project-structure)
 * [Running the Application](#️-running-the-application)
 * [Running Tests](#-running-unit-tests)
-* [Example Run Screenshots](./screenshots)
-* [Database Configuration Notes](#-database-design-highlights)
-* [Notes](#️-final-notes)
-* [Team Contributions](#-contributors)
+* [Example Run Screenshots](#-example-run-screenshots)
+* [Database Design Highlights](#-database-design-highlights)
+* [Final Notes](#️-final-notes)
+* [Contributors](#-contributors)
 
 ---
 
@@ -99,7 +99,6 @@ Exit psql:
 ### 3. Load Schema and Data
 
 ⚠️ **Important:** PostgreSQL does not automatically switch to a newly created database. You must explicitly connect to it before running the schema.
-
 
 Run the schema file on the correct database:
 
@@ -188,6 +187,7 @@ This layered architecture ensures separation of concerns, maintainability, and s
 - View appointments for a specific provider  
 - Access a dashboard with aggregated system metrics  
 - Lookup provider details using NPI
+- Supports modular repository-service architecture for scalability
 
 ---
 
@@ -227,7 +227,7 @@ Run the CLI interface:
 python src/main.py
 ```
 
-If running the Python interface, you will see options for:
+The CLI provides the following options:
 
 * Patient lookup
 * Provider appointments
@@ -290,6 +290,12 @@ PYTHONPATH=src pytest tests/ --cov=src --cov-report=html
 ```
 
 This command generates an HTML coverage report in the `htmlcov/` directory.
+
+---
+
+## 📸 Example Run Screenshots
+
+Screenshots demonstrating CLI interactions and system functionality are available in the [screenshots folder](./screenshots).
 
 ---
 
@@ -368,3 +374,5 @@ Each query includes:
 * Nishtha Gupta (UID: 122031197)
 * Rozan Sonnadara (UID: 122359826)
 * Simran Mohapatra (UID: 121957467)
+
+To check individual contributions, please check [Team Contributions File](./team_contributions.md)
