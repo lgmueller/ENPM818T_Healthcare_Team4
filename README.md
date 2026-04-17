@@ -408,7 +408,7 @@ Each query includes:
 
 ## 👩‍💻 Contributors
 
-* Lillian Mueller (UID: )
+* Lillian Mueller (UID: 115869684)
 * Nishtha Gupta (UID: 122031197)
 * Rozan Sonnadara (UID: 122359826)
 * Simran Mohapatra (UID: 121957467)
