@@ -188,10 +188,13 @@ This layered architecture ensures separation of concerns, maintainability, and s
 - Access a dashboard with aggregated system metrics  
 - Lookup provider details using NPI
 - Supports modular repository-service architecture for scalability
-- Core Tables Implemented
-  - Patient (full CRUD)
-  - Appointment (full CRUD)
-  - Prescription (full CRUD)
+- The following tables are fully implemented with CRUD operations:
+  - Patient  
+  - Appointment  
+  - Prescription  
+- The following tables are implemented as read-only repositories:
+  - Provider  
+  - Patient Insurance  
 
 ---
 
