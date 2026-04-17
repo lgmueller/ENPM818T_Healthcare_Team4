@@ -1,0 +1,12 @@
+.env
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+.vscode/
+# Ignoring Coverage related files
+.coverage
+htmlcov/
+# Ignoring Mac specific files
+.DS_Store
