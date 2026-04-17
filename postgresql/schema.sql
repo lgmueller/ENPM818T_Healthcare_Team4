@@ -1,4 +1,8 @@
-CREATE DATABASE healthcare_db;
+-- CREATE DATABASE healthcare_db;
+
+-- ONLY tables, constraints, indexes will be created
+-- need to create DB before hand
+-- follow steps in Readme.md
 
 -- enums for types
 CREATE TYPE country_enum AS ENUM (

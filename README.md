@@ -50,9 +50,9 @@ cd ENPM818T_Healthcare_Team4
 
 ### 2. Create PostgreSQL Database
 
-Login to PostgreSQL:
+Open PostgreSQL:
 
-```bash
+```sql
 psql -U postgres
 ```
 
@@ -62,40 +62,78 @@ Create the database:
 CREATE DATABASE healthcare_db;
 ```
 
+Exit psql:
+
+```sql
+\q
+```
+
 ---
 
 ### 3. Load Schema and Data
 
-Run the schema file:
+⚠️ **Important:** PostgreSQL does not automatically switch to a newly created database. You must explicitly connect to it before running the schema.
 
-```bash
-psql -U postgres -d healthcare_db -f schema.sql
+
+Run the schema file on the correct database:
+
+```sql
+psql -U postgres -d healthcare_db -f postgresql/schema.sql
 ```
 
 (Optional) Load sample data:
 
-```bash
-psql -U postgres -d healthcare_db -f data.sql
+```sql
+psql -U postgres -d healthcare_db -f postgresql/data.sql
 ```
 
 (Optional, only after loading data) Load sample queries:
-```bash
-psql -U postgres -d healthcare_db -f queries.sql
+```sql
+psql -U postgres -d healthcare_db -f postgresql/queries.sql
 ```
 
 ---
 
 ### 4. Configure Environment Variables
 
-Create a `.env` file in the root directory:
+PostgreSQL authentication depends on your local setup.
+
+#### Option 1: Using Default System User (Recommended for Mac/Linux)
+
+If your PostgreSQL installation uses your system username (common on Mac), you can omit `DB_USER` and `DB_PASSWORD` from the `.env` file:
 
 ```env
 DB_NAME=healthcare_db
-DB_USER=postgres
-DB_PASSWORD=
 DB_HOST=localhost
 DB_PORT=5432
 ```
+
+In this case, the application will connect using your OS user.
+
+---
+
+#### Option 2: Using Explicit Credentials
+
+If your PostgreSQL setup requires a username and password, specify them:
+
+```env
+DB_NAME=healthcare_db
+DB_USER=<your_username_here>
+DB_PASSWORD=<your_password_here>
+DB_HOST=localhost
+DB_PORT=5432
+```
+
+---
+
+#### ⚠️ Important
+
+* Do NOT leave `DB_USER` or `DB_PASSWORD` empty (e.g., `DB_USER=`)
+* Either provide valid values or omit them entirely
+* Incorrect configuration may result in errors such as:
+
+  * `role "postgres" does not exist`
+  * `role "password=" does not exist`
 
 ---
 
@@ -115,7 +153,7 @@ Run the CLI interface:
 python src/main.py
 ```
 
-You will see a menu-driven interface for:
+If running the Python interface, you will see options for:
 
 * Patient lookup
 * Provider appointments
@@ -142,12 +180,12 @@ ENPM818T_Healthcare_Team4/
 │    ├── repositories/       # SQL queries and CRUD operations
 │    ├── services/           # Business logic layer
 │    ├── cli/                # CLI interface
-│    ├── main.py             # Starting point of the application
+│    └── main.py             # Starting point of the application
 │
 ├── postgresql/
 │    ├── schema.sql          # Database schema
 │    ├── data.sql            # Sample data
-│    ├── queries.sql         # Sample queries
+│    └── queries.sql         # Sample queries
 │
 ├── tests/
 ├── .env.example              # Environment variables store
@@ -167,6 +205,65 @@ ENPM818T_Healthcare_Team4/
 
 ---
 
+## 🏥 Database Design Highlights
+
+- Enforced healthcare identifiers:
+  - MRN (10-digit unique identifier)
+  - NPI (10-digit provider identifier)
+  - DEA numbers (2 letters + 7 digits for prescribing providers)
+
+- Appointment scheduling system:
+  - Provider availability stored separately
+  - One-to-one booking enforced via UNIQUE(slot_id)
+
+- Data integrity:
+  - CHECK constraints for SSN, phone numbers, ZIP codes
+  - Foreign key relationships across all major entities
+
+- Triggers:
+  - Automatic `updated_at` timestamp updates for key tables
+
+- Controlled substances:
+  - Identified via medication.schedule
+  - DEA linkage handled via provider DEA records
+  - Cross-table enforcement documented (PostgreSQL limitation)
+
+---
+
+## 🧪 Synthetic Data
+
+All data in this project is fully synthetic and generated to simulate realistic healthcare scenarios.
+
+- No real patient or provider data is used
+- MRNs, NPIs, DEA numbers follow valid formats
+- Data distributions mimic real-world usage:
+  - Appointment statuses (completed, scheduled, no-show)
+  - Insurance coverage patterns
+  - Prescription usage and controlled substances
+  - Lab results including abnormal values
+  
+⚠️ Note: SSNs are stored as 9-digit numeric strings to satisfy schema constraints.
+
+---
+
+## 📊 SQL Queries
+
+The project includes 15 SQL queries covering:
+
+- Clinical workflows (patient care coordination, medication safety)
+- Operational insights (provider workload, appointment breakdown)
+- Financial analysis (insurance coverage, prescription costs)
+
+Each query includes:
+- Clinical or business context
+- Tables used
+- Complexity features (joins, aggregates, filtering)
+- Sample outputs based on synthetic data
+
+⚠️ Note: Queries were adjusted to reflect the synthetic dataset.
+
+---
+
 ## ⚠️ Notes
 
 * Ensure PostgreSQL is running before starting the application
@@ -180,6 +277,6 @@ ENPM818T_Healthcare_Team4/
 * Lily
 * Nishtha
 * Rozan
-* Simran
+* Simran Mohapatra (UID: 121957467)
 
 ---
