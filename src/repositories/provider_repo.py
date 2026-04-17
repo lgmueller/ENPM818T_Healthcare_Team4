@@ -9,7 +9,7 @@ class ProviderRepository(BaseRepository):
     def find_by_npi(self, npi):
         row = self._fetch_one(
             """
-            SELECT provider_id, first_name, middle_name, last_name,
+            SELECT provider_id, first_name, last_name,
                 provider_type, npi, can_prescribe
             FROM provider
             WHERE npi = %s

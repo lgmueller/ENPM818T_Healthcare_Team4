@@ -4,7 +4,7 @@ Implements business logic for dashboard-related operations.
 Translates database exceptions into domain errors (ValueError) for the CLI.
 """
 
-from psycopg2 import OperationalError, DatabaseError, InterfaceError
+from psycopg2 import OperationalError, InterfaceError
 from src.repositories.patient_repo import PatientRepository
 from src.repositories.appointment_repo import AppointmentRepository
 from src.repositories.prescription_repo import PrescriptionRepository
@@ -29,6 +29,6 @@ class DashboardService:
             result = repository_func(*args)
         except (OperationalError, InterfaceError) as e:
             raise ValueError("Could not connect to the database. Please try again later.") from e
-        except DatabaseError as e:
+        except (Exception) as e:
             raise ValueError(f"An error occurred while retrieving {label} count") from e
         return result

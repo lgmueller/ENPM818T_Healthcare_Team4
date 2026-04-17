@@ -54,7 +54,7 @@ class AppointmentRepository(BaseRepository):
             INSERT INTO appointment (
                 mrn, slot_id, appt_type, appt_status, visit_reason, previous_admission_id
             )
-            VALUES (%s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s, %s, %s, %s)
             """,
             (
                 appt.mrn,

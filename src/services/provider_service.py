@@ -5,7 +5,7 @@ Translates database exceptions into domain errors (ValueError) for the CLI.
 """
 
 from dataclasses import is_dataclass, asdict
-from psycopg2 import OperationalError, DatabaseError, InterfaceError
+from psycopg2 import OperationalError, InterfaceError
 from src.repositories.appointment_repo import AppointmentRepository
 from src.repositories.provider_repo import ProviderRepository
 
@@ -36,7 +36,7 @@ class ProviderService:
             result = repository_func(*args)
         except (OperationalError, InterfaceError) as e:
             raise ValueError("Could not connect to the database. Please try again later.") from e
-        except DatabaseError as e:
+        except (Exception) as e:
             raise ValueError(f"An error occured while retreiving {label} details") from e
         if not result:
             raise ValueError(not_found_message)

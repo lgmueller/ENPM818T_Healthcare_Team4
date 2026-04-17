@@ -4,7 +4,7 @@ Implements business logic for patient-related operations.
 Translates database exceptions into domain errors (ValueError) for the CLI.
 """
 
-from psycopg2 import OperationalError, DatabaseError, InterfaceError
+from psycopg2 import OperationalError, InterfaceError
 from dataclasses import asdict, is_dataclass
 from src.repositories.patient_repo import PatientRepository
 from src.repositories.insurance_repo import InsuranceRepository
@@ -41,7 +41,7 @@ class PatientService:
             result = repository_func(*args)
         except (OperationalError, InterfaceError) as e:
             raise ValueError("Could not connect to the database. Please try again later.") from e
-        except DatabaseError as e:
+        except (Exception) as e:
             raise ValueError("An error occured while retreiving patient details") from e
         if is_dataclass(result) and not isinstance(result, type):
             return asdict(result)

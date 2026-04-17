@@ -1,3 +1,5 @@
 psycopg[binary]
 psycopg-pool
 python-dotenv
+pytest
+pytest-cov
