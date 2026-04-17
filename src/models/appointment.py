@@ -2,11 +2,11 @@ from dataclasses import dataclass
 
 @dataclass
 class Appointment:
-    appointment_id: int
     mrn: str
     slot_id: int
     appt_type: str
     appt_status: str
+    appointment_id: int | None = None
     previous_admission_id: int | None = None
     visit_reason: str | None = None
 

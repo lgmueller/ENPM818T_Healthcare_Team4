@@ -49,21 +49,23 @@ class AppointmentRepository(BaseRepository):
         return [Appointment.from_row(r) for r in rows]
 
     def create(self, appt: Appointment):
-        self._execute(
+        row = self._fetch_one(
             """
             INSERT INTO appointment (
-                mrn, slot_id, appt_type, appt_status, visit_reason, previous_admission_id
+                mrn, slot_id, appt_type, appt_status
             )
-            VALUES (%s, %s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s, %s)
+            RETURNING appointment_id
             """,
             (
                 appt.mrn,
                 appt.slot_id,
                 appt.appt_type,
-                appt.appt_status,
-                getattr(appt, "visit_reason", None)
+                appt.appt_status
             )
         )
+
+        appt.appointment_id = row["appointment_id"]
         return appt
 
     def update(self, appt: Appointment):

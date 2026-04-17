@@ -3,13 +3,13 @@ from datetime import datetime
 
 @dataclass
 class Prescription:
-    prescription_id: int
     mrn: str
     medication_id: int
     date_prescribed: datetime
     prescription_status: str
     max_num_refills: int
     provider_id: int | None
+    prescription_id: int | None = None
     expiration_date: datetime | None = None
     dosage: str | None = None
     frequency: str | None = None

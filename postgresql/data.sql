@@ -1494,7 +1494,8 @@ INSERT INTO appointment (MRN, slot_id, appt_type, appt_status, visit_reason, pre
 ('1000000079', 5, 'routine_checkup', 'no_show', 'Blood pressure follow-up', NULL),
 ('1000000050', 6, 'telehealth', 'under_review', 'Cardiology consultation', NULL),
 ('1000000013', 7, 'telehealth', 'confirmed', 'Blood pressure follow-up', NULL),
-('1000000049', 8, 'new_patient', 'completed', 'Upper respiratory symptoms', NULL),
+-- Using the slot_id = '8' in tests, so commenting it out
+-- ('1000000049', 8, 'new_patient', 'completed', 'Upper respiratory symptoms', NULL),
 ('1000000070', 9, 'routine_checkup', 'cancelled', 'Neurology follow-up', NULL),
 ('1000000103', 10, 'procedure', 'completed', 'Upper respiratory symptoms', NULL),
 ('1000000013', 11, 'new_patient', 'cancelled', 'Cardiology consultation', NULL),

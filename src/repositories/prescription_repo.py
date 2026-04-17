@@ -34,7 +34,7 @@ class PrescriptionRepository(BaseRepository):
         return [Prescription.from_row(r) for r in rows]
 
     def create(self, p: Prescription):
-        self._execute(
+        row = self._fetch_one(
             """
             INSERT INTO prescription (
                 mrn, provider_id, medication_id,
@@ -44,6 +44,7 @@ class PrescriptionRepository(BaseRepository):
                 special_instructions
             )
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            RETURNING prescription_id
             """,
             (
                 p.mrn,
@@ -59,6 +60,9 @@ class PrescriptionRepository(BaseRepository):
                 getattr(p, "special_instructions", None)
             )
         )
+
+        # Assign generated ID back to object
+        p.prescription_id = row["prescription_id"]
         return p
 
     def update(self, p: Prescription):
@@ -95,7 +99,6 @@ class PrescriptionRepository(BaseRepository):
             (prescription_id,)
         )
 
-    # 🔥 Custom query (important)
     def find_active_prescriptions(self, mrn):
         rows = self._fetch_all(
             """
