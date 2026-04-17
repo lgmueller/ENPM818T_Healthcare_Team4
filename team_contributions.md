@@ -13,12 +13,12 @@
 ## Python Application
 | Task     | Team Member      | Time Spent (hrs) | 
 | ------------- | ------------- |-- | 
-| configuration (database.py) | -- |-- | 
+| configuration (database.py) | Rozan | 0.5 | 
 | models (patient.py, ..., etc) | -- |-- | 
 | repositories (CRUD operations) | -- |-- | 
-| services (business logic) | -- |-- | 
-| main.py | -- |-- | 
-| testing | -- | -- |
+| services (business logic) | Rozan | 4 | 
+| main.py | Rozan | 2 | 
+| testing | Rozan | 4 |
 
 ## Documentation 
 | Task     | Team Member      | Time Spent (hrs) | 
