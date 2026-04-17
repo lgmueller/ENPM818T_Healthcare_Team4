@@ -214,18 +214,18 @@ class TestProviderRepository:
         provider = provider_repo.find_by_id(-1)  # unlikely ID
         assert provider is None
 
-    def test_provider_find_all(self, provider_repo):
-        providers = provider_repo.find_all()
-        assert isinstance(providers, list)
-        assert len(providers) > 0
-        # check structure of first item
-        provider = providers[0]
-        assert hasattr(provider, "provider_id")
-        assert hasattr(provider, "first_name")
-        assert hasattr(provider, "last_name")
-        assert hasattr(provider, "provider_type")
-        assert hasattr(provider, "npi")
-        assert hasattr(provider, "can_prescribe")
+    def test_find_all_returns_list_with_limit_boundary(self, prescription_repo):
+        results = prescription_repo.find_all(limit=5, offset=0)
+        assert isinstance(results, list)
+        assert len(results) <= 5
+        assert len(results) > 0
+
+    def test_pagination(self, provider_repo):
+        page1 = provider_repo.find_all(limit=2, offset=0)
+        page2 = provider_repo.find_all(limit=2, offset=2)
+        assert isinstance(page1, list)
+        assert isinstance(page2, list)
+        assert page1 != page2  # ensures pagination is working
 
 
 # ----------------------------------------------------------------

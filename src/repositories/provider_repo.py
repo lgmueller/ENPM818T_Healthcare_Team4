@@ -32,14 +32,15 @@ class ProviderRepository(BaseRepository):
         )
         return Provider.from_row(row) if row else None
     
-    def find_all(self):
+    def find_all(self, limit=20, offset=0):
         rows = self._fetch_all(
             """
             SELECT provider_id, first_name, last_name,
                 provider_type, npi, can_prescribe
             FROM provider
+            LIMIT %s OFFSET %s
             """,
-            ()
+            (limit, offset)
         )
         return [Provider.from_row(row) for row in rows]
     
