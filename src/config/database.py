@@ -14,13 +14,24 @@ class DatabaseConfig:
 
     @classmethod
     def _conninfo(cls) -> str:
-        return (
-            f"host={os.getenv('DB_HOST', 'localhost')} "
-            f"port={os.getenv('DB_PORT', '5432')} "
-            f"dbname={os.getenv('DB_NAME')} "
-            f"user={os.getenv('DB_USER')} "
-            f"password={os.getenv('DB_PASSWORD')}"
-        )
+        parts = [
+            f"host={os.getenv('DB_HOST', 'localhost')}",
+            f"port={os.getenv('DB_PORT', '5432')}",
+            f"dbname={os.getenv('DB_NAME', 'healthcare_db')}",
+        ]
+
+        # Optionally include user and password if they are set in the environment variables
+        user = os.getenv("DB_USER")
+        password = os.getenv("DB_PASSWORD")
+
+        # Only include user and password in the connection string if they are provided
+        if user:
+            parts.append(f"user={user}")
+
+        if password:
+            parts.append(f"password={password}")
+
+        return " ".join(parts)
 
     @classmethod
     def initialize(cls) -> None:
