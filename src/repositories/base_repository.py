@@ -1,5 +1,5 @@
 from psycopg.rows import dict_row
-from src.config.database import DatabaseConfig
+from config.database import DatabaseConfig
 
 class BaseRepository:
 

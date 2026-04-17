@@ -1,5 +1,5 @@
-from src.models.appointment import Appointment
-from src.repositories.base_repository import BaseRepository
+from models.appointment import Appointment
+from repositories.base_repository import BaseRepository
 
 
 class AppointmentRepository(BaseRepository):

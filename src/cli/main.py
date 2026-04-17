@@ -4,9 +4,9 @@ Prints menu, takes user input, and calls service functions to display results.
 Catches ValueError from services and prints user-friendly messages.
 """
 
-from src.services.patient_service import PatientService
-from src.services.provider_service import ProviderService
-from src.services.dashboard_service import DashboardService
+from services.patient_service import PatientService
+from services.provider_service import ProviderService
+from services.dashboard_service import DashboardService
 
 
 def main() -> None:

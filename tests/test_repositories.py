@@ -6,24 +6,24 @@ pytest tests/ --cov=src --cov-report=html
 from datetime import date
 
 import pytest
-from src.config.database import DatabaseConfig
+from config.database import DatabaseConfig
 
 # ----------------------------------------------------------------
-from src.repositories.patient_repo import PatientRepository
-from src.repositories.prescription_repo import PrescriptionRepository
-from src.repositories.appointment_repo import AppointmentRepository
-from src.repositories.facility_repo import FacilityRepository
-from src.repositories.insurance_repo import InsuranceRepository
-from src.repositories.provider_repo import ProviderRepository
-from src.repositories.medication_repo import MedicationRepository
+from repositories.patient_repo import PatientRepository
+from repositories.prescription_repo import PrescriptionRepository
+from repositories.appointment_repo import AppointmentRepository
+from repositories.facility_repo import FacilityRepository
+from repositories.insurance_repo import InsuranceRepository
+from repositories.provider_repo import ProviderRepository
+from repositories.medication_repo import MedicationRepository
 
-from src.models.patient import Patient
-from src.models.appointment import Appointment
-from src.models.prescription import Prescription
-from src.models.facility import Facility
-from src.models.insurance import Insurance
-from src.models.provider import Provider
-from src.models.medication import Medication
+from models.patient import Patient
+from models.appointment import Appointment
+from models.prescription import Prescription
+from models.facility import Facility
+from models.insurance import Insurance
+from models.provider import Provider
+from models.medication import Medication
 # ----------------------------------------------------------------
 
 

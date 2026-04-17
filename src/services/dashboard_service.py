@@ -4,10 +4,10 @@ Implements business logic for dashboard-related operations.
 Translates database exceptions into domain errors (ValueError) for the CLI.
 """
 
-from psycopg2 import OperationalError, InterfaceError
-from src.repositories.patient_repo import PatientRepository
-from src.repositories.appointment_repo import AppointmentRepository
-from src.repositories.prescription_repo import PrescriptionRepository
+from psycopg import OperationalError, InterfaceError
+from repositories.patient_repo import PatientRepository
+from repositories.appointment_repo import AppointmentRepository
+from repositories.prescription_repo import PrescriptionRepository
 
 class DashboardService:
 

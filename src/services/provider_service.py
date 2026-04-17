@@ -5,9 +5,9 @@ Translates database exceptions into domain errors (ValueError) for the CLI.
 """
 
 from dataclasses import is_dataclass, asdict
-from psycopg2 import OperationalError, InterfaceError
-from src.repositories.appointment_repo import AppointmentRepository
-from src.repositories.provider_repo import ProviderRepository
+from psycopg import OperationalError, InterfaceError
+from repositories.appointment_repo import AppointmentRepository
+from repositories.provider_repo import ProviderRepository
 
 class ProviderService:
 

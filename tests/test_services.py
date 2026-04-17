@@ -8,12 +8,12 @@ from decimal import Decimal
 from zoneinfo import ZoneInfo
 
 import pytest
-from src.config.database import DatabaseConfig
+from config.database import DatabaseConfig
 
 # ----------------------------------------------------------------
-from src.services.patient_service import PatientService
-from src.services.dashboard_service import DashboardService
-from src.services.provider_service import ProviderService
+from services.patient_service import PatientService
+from services.dashboard_service import DashboardService
+from services.provider_service import ProviderService
 # ----------------------------------------------------------------
 
 
